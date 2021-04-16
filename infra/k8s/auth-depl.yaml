@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: stephengrider/auth
+          image: torenware/ticketer-auth
 ---
 apiVersion: v1
 kind: Service
