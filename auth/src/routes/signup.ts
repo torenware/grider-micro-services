@@ -18,12 +18,16 @@ router.post(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.status(400).send(errors.array());
+      //return res.status(400).send(errors.array());
+      throw new Error('Invalid email or password');
     }
 
     const { email, password } = req.body;
 
-    console.log('Create a user here.')
+    console.log('Create a user here.');
+
+    // No DB yet, so
+    throw new Error('Database not yet implemented');
     // new User({ email, password })
     res.send({});
   }
