@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 
+import { RequestValidationError } from '../errors/request-validation-error';
+import { DatabaseConnectionError } from '../errors/database-connection-error';
+
 const router = express.Router();
 
 router.post(
@@ -19,7 +22,7 @@ router.post(
 
     if (!errors.isEmpty()) {
       //return res.status(400).send(errors.array());
-      throw new Error('Invalid email or password');
+      throw new RequestValidationError(errors.array());
     }
 
     const { email, password } = req.body;
@@ -27,8 +30,7 @@ router.post(
     console.log('Create a user here.');
 
     // No DB yet, so
-    throw new Error('Database not yet implemented');
-    // new User({ email, password })
+    throw new DatabaseConnectionError();
     res.send({});
   }
 );
