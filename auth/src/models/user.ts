@@ -19,16 +19,34 @@ interface UserDoc extends mongoose.Document {
   password: string;
 }
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String, // mongoose type, not TS
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String, // mongoose type, not TS
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  {
+    // We want to normalize mongodb's output by removing
+    // the password and the mongo version, and map the
+    // id to something standard.
+    toJSON: {
+      // Trace over TS docs for toJSON, and find the transform
+      // property, which modifies the ret object.
+      transform(doc, ret) {
+        const id = ret._id;
+        ret.id = id;
+        delete ret._id;
+        delete ret.password;
+        delete ret.__v;
+      },
+    },
+  }
+);
 
 // Add password handling logic as a pre func
 userSchema.pre('save', async function (done) {

@@ -15,3 +15,16 @@ tsc --init
 ```bash
 curl -X POST ticketing.local/api/users/signup -H "Content-Type: application/json" -d '{"password": "linuxize", "email": "linuxize@example.com"}
 ```
+
+Improved:
+
+```bash
+curl -v --insecure -X POST https://ticketing.local/api/users/signup -H \
+"Content-Type: application/json"  -d '{"password": "linuxize", "email": "linuxize@tester.org"}'
+```
+
+## Secret for JWT
+
+```
+k create secret generic jwt-secret --from-literal jwt=so-very-secret
+```
