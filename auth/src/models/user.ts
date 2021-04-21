@@ -38,7 +38,6 @@ const userSchema = new mongoose.Schema(
       // Trace over TS docs for toJSON, and find the transform
       // property, which modifies the ret object.
       transform(doc, ret) {
-        console.error('ret', ret);
         ret.id = ret._id;
         delete ret._id;
         delete ret.password;
