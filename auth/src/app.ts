@@ -21,8 +21,7 @@ app.use(json());
 app.use(
   cookieSession({
     signed: false,
-    // when I have TLS working:
-    secure: true,
+    secure: process.env.NODE_ENV !== 'test',
   })
 );
 
