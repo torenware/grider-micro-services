@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Router from 'next/router';
 import useRequest from '../../hooks/use-request';
 
 const component = (props) => {
@@ -10,6 +11,9 @@ const component = (props) => {
     body: {
       email,
       password
+    },
+    onSuccess: () => {
+      Router.push('/');
     }
   });
 
