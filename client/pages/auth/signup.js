@@ -1,51 +1,49 @@
 import { useState } from 'react';
-import axios from 'axios';
+import useRequest from '../../hooks/use-request';
 
 const component = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState([]);
-
-  return <form onSubmit={async evt => {
-    evt.preventDefault();
-    try {
-      const response = await axios.post('/api/users/signup', {
-        email,
-        password
-      });
-
-      console.log(response.data);
+  const { doRequest, errors } = useRequest({
+    url: '/api/users/signup',
+    method: 'post',
+    body: {
+      email,
+      password
     }
-    catch (err) {
-      console.log('Error:', err.response.data);
-      setErrors(err.response.data.errors);
-    }
-  }}>
-    <>
-      <h1>Signup</h1>
-      <div className='form-group'>
+  });
+
+  const onSubmit = async event => {
+    event.preventDefault();
+    doRequest();
+  };
+
+  return (
+    <form onSubmit={onSubmit}>
+      <h1>Sign Up</h1>
+      <div className="form-group">
         <label>Email Address</label>
-        <input value={email} onChange={evt => setEmail(evt.target.value)} className='form-control' />
+        <input
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          className="form-control"
+        />
       </div>
-      <div className='form-group'>
+      <div className="form-group">
         <label>Password</label>
-        <input value={password} onChange={evt => setPassword(evt.target.value)} className='form-control' type='password' />
+        <input
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          type="password"
+          className="form-control"
+        />
       </div>
-      {errors.length > 0 && <div className='alert alert-danger'>
-        <h4>There were errors</h4>
-        <ul>
-          {errors.map(err => {
-            return <li key={err.field || err.message}>{err.message}</li>
-          })
-          }
+      {errors}
+      <button className="btn btn-primary">Sign Up</button>
+    </form>
 
-        </ul>
-      </div>
+  );
 
-      }
-      <button className="btn btn-primary">Signup</button>
-    </>
-  </form>
 }
 
 export default component;
