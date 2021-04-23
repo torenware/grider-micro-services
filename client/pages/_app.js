@@ -1,12 +1,15 @@
 // This file is "magic" for next
 import 'bootstrap/dist/css/bootstrap.css';
 import buildClient from '../api/build-client';
+import Header from '../components/header';
 
 const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <div>
-      <h1>Header! {currentUser.email}</h1>
-      <Component {...pageProps} />
+      <Header currentUser={currentUser} />
+      <div className='container'>
+        <Component {...pageProps} />
+      </div>
     </div>
   );
 };
