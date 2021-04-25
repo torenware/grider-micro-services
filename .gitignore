@@ -1,4 +1,5 @@
 staging
+common
 node_modules
 *.zip
 *~
