@@ -10,8 +10,8 @@ import { signinRouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
 
-import { errorHandler } from './middlewares/error-handlers';
-import { NotFoundError } from './errors/not-found-error';
+import { errorHandler } from '@grider-courses/common';
+import { NotFoundError } from '@grider-courses/common';
 
 const app = express();
 // Trust the ingress nginx proxy upstream:
