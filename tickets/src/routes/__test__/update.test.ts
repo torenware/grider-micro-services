@@ -96,4 +96,10 @@ it('returns a 200 if authenticated and request is valid', async () => {
       price: 11.5,
     })
     .expect(200);
+
+  // Did we actually update the ticket?
+  const updated = await request(app).get(`/api/tickets/${ticketID}`).send();
+
+  expect(updated.body.title).toEqual('The Eternal Triangle');
+  expect(updated.body.price).toEqual(11.5);
 });

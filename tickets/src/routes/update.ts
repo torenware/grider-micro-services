@@ -27,7 +27,14 @@ router.put(
     if (ticket.userId !== req.currentUser?.id) {
       throw new NotAuthorizedError();
     }
-    res.send({});
+
+    // Now updated the record.
+    const record = await Ticket.findById(req.params.id);
+    record!.title = req.body.title;
+    record!.price = req.body.price;
+    await record?.save();
+
+    res.send(record);
   }
 );
 
