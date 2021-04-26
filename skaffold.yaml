@@ -19,6 +19,14 @@ build:
         manual:
           - src: 'src/***/*.ts'
             dest: .
+    - image: torenware/ticketer-tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/***/*.ts'
+            dest: .
     - image: torenware/ticketer-client
       context: client
       docker:

@@ -5,13 +5,15 @@ import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 
-import { currentUserRouter } from './routes/current-user';
-import { signinRouter } from './routes/signin';
-import { signoutRouter } from './routes/signout';
-import { signupRouter } from './routes/signup';
+// app routes here
+import { createTicketRouter } from './routes/new';
+import { fetchTicketRouter } from './routes/show';
 
-import { errorHandler } from '@grider-courses/common';
-import { NotFoundError } from '@grider-courses/common';
+import {
+  errorHandler,
+  currentUser,
+  NotFoundError,
+} from '@grider-courses/common';
 
 const app = express();
 // Trust the ingress nginx proxy upstream:
@@ -25,10 +27,11 @@ app.use(
   })
 );
 
-app.use(currentUserRouter);
-app.use(signinRouter);
-app.use(signoutRouter);
-app.use(signupRouter);
+app.use(currentUser);
+
+// use routes here
+app.use(createTicketRouter);
+app.use(fetchTicketRouter);
 
 // Universal route to deal with 404s. Note this needs to be *before* the
 // call to errorHandler.

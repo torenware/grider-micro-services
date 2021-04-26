@@ -1,6 +1,8 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import request from 'supertest';
+import jwt from 'jsonwebtoken';
+
 import { app } from '../app';
 
 let mongo: any;
@@ -12,26 +14,34 @@ let mongo: any;
 declare global {
   namespace NodeJS {
     interface Global {
-      signinCookie(): Promise<string[]>;
+      signinCookie(): string[];
     }
   }
 }
 
-global.signinCookie = async () => {
-  const email = 'test@test.com';
-  const password = 'password';
+// No longer async. Note type is also changed.
+global.signinCookie = () => {
+  // We need to build a mocked token and cookie.
 
-  const response = await request(app)
-    .post('/api/users/signup')
-    .send({
-      email,
-      password,
-    })
-    .expect(201);
+  const payload = {
+    id: '1lk24j124l',
+    email: 'fake@faker.org',
+  };
 
-  const cookie = response.get('Set-Cookie');
+  const userJwt = jwt.sign(
+    payload,
+    // The ! indicates that TS should allow this.
+    process.env.JWT_KEY!
+  );
 
-  return cookie;
+  const session = {
+    jwt: userJwt,
+  };
+
+  const sessionJSON = JSON.stringify(session);
+  const base64 = Buffer.from(sessionJSON).toString('base64');
+  const cookie = `express:sess=${base64}`;
+  return [cookie];
 };
 
 beforeAll(async () => {
