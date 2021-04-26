@@ -1,9 +1,5 @@
 import express, { Request, Response } from 'express';
-import {
-  requireAuth,
-  validateRequest,
-  NotFoundError,
-} from '@grider-courses/common';
+import { requireAuth, NotFoundError } from '@grider-courses/common';
 import { Ticket } from '../models/ticket';
 
 const router = express.Router();

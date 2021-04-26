@@ -22,7 +22,7 @@ router.post(
       userId: req.currentUser!.id,
     });
     await ticket.save();
-    res.sendStatus(201);
+    res.status(201).send(ticket);
   }
 );
 

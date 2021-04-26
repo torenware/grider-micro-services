@@ -1,9 +1,14 @@
 import request from 'supertest';
 import { app } from '../../app';
+import mongoose from 'mongoose';
+
 // import { Ticket } from '../../models/ticket';
 
 it('Fails if there is no such ticket', async () => {
-  const ticketID = 'random-stuff';
+  // Make sure we use a valid looking ID, since
+  // mongo and mongoose get annoyed if we choose
+  // something invalid.
+  const ticketID = new mongoose.Types.ObjectId().toHexString();
   await request(app)
     .get(`/api/tickets/${ticketID}`)
     .set('Cookie', global.signinCookie())
@@ -22,9 +27,7 @@ it('succeeds if the ticket exists', async () => {
       price,
     });
   expect(ticketResponse.status).toEqual(201);
-  const { id, userId } = ticketResponse.body;
-  console.log(ticketResponse.body);
-  //console.log(id, userId);
+  const { id } = ticketResponse.body;
 
   // Now fetch the ticket
   const response = await request(app)
