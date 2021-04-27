@@ -1,7 +1,5 @@
 import { Message } from 'node-nats-streaming';
-import { Listener } from './base-listener';
-import { TicketCreatedEvent } from './ticket-created-event';
-import { Subjects } from './subjects';
+import { Listener, Subjects, TicketCreatedEvent } from '@grider-courses/common';
 
 class TicketCreatedListener extends Listener<TicketCreatedEvent> {
   // Nail down subject. This would be "final" in Java.
