@@ -14,10 +14,16 @@ abstract class Publisher<T extends Event> {
     this.client = client;
   }
 
-  publish(data: T['data']) {
-    const packedData = JSON.stringify(data);
-    this.client.publish(this.subject, packedData, (err, guid) => {
-      console.log(`Pushed event ${guid}`);
+  publish(data: T['data']): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const packedData = JSON.stringify(data);
+      this.client.publish(this.subject, packedData, (err, guid) => {
+        if (err) {
+          return reject(err);
+        }
+        console.log(`Pushed event ${guid}`);
+        resolve();
+      });
     });
   }
 }

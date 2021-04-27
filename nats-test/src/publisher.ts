@@ -9,7 +9,7 @@ const stan = nats.connect('ticketing', 'abc', {
 });
 
 // No async/await here. Old timey events.
-stan.on('connect', () => {
+stan.on('connect', async () => {
   console.log('Publisher connected to NATS');
 
   const data = {
@@ -21,5 +21,9 @@ stan.on('connect', () => {
   const publisher = new TicketCreatedPublisher(stan);
 
   // and publish it to the server, labeling it with our topic. The callback is optional.
-  publisher.publish(data);
+  try {
+    await publisher.publish(data);
+  } catch (err) {
+    console.error(err);
+  }
 });
