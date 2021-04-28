@@ -6,10 +6,10 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 
 // app routes here
-import { createTicketRouter } from './routes/new';
-import { fetchTicketRouter } from './routes/show';
-import { getTicketsRouter } from './routes';
-import { updateTicketRouter } from './routes/update';
+import { createOrderRouter } from './routes/new';
+import { fetchOrderRouter } from './routes/show';
+import { getOrdersRouter } from './routes';
+import { deleteOrderRouter } from './routes/delete';
 
 import {
   errorHandler,
@@ -32,10 +32,10 @@ app.use(
 app.use(currentUser);
 
 // use routes here
-app.use(createTicketRouter);
-app.use(fetchTicketRouter);
-app.use(getTicketsRouter);
-app.use(updateTicketRouter);
+app.use(createOrderRouter);
+app.use(getOrdersRouter);
+app.use(fetchOrderRouter);
+app.use(deleteOrderRouter);
 
 // Universal route to deal with 404s. Note this needs to be *before* the
 // call to errorHandler.
