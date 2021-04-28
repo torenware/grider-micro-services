@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
+import { OrderStatus } from '@grider-courses/common';
+import { TicketDoc } from './ticket';
 
 // Define a "new user" TS interface to limit the
 // attributes of a new user.
 interface OrderAttrs {
   userId: string;
-  status: string;
+  status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDoc;
 }
@@ -17,10 +19,10 @@ interface OrderModel extends mongoose.Model<OrderDoc> {
 // Interface to describe a User document.
 interface OrderDoc extends mongoose.Document {
   userId: string;
-  status: string;
+  status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDoc;
-}}
+}
 
 const orderSchema = new mongoose.Schema(
   {
@@ -31,14 +33,15 @@ const orderSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
+      default: OrderStatus.Created,
     },
     expiresAt: {
-      type: mongoose.Schema.Types.Date
+      type: mongoose.Schema.Types.Date,
     },
     ticket: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Ticket'
-    }
+      ref: 'Ticket',
+    },
   },
   {
     // We want to normalize mongodb's output by removing
