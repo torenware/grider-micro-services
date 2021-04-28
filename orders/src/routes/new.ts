@@ -10,6 +10,10 @@ import {
 import { natsWrapper } from '../nats-wrapper';
 import { Ticket } from '../models/ticket';
 import { Order } from '../models/orders';
+import e from 'express';
+
+// Candidate for an env var:
+const EXPIRATION_WINDOW_SECONDS = 60 * 15;
 
 const router = express.Router();
 
@@ -28,29 +32,29 @@ router.post(
       throw new NotFoundError();
     }
 
-    // Ticket is not available, i.e., is not in a cancelled
-    // order
-    const existingOrder = await Order.findOne({
-      ticket,
-      status: {
-        $in: [
-          OrderStatus.Created,
-          OrderStatus.AwaitingPayment,
-          OrderStatus.Complete,
-        ],
-      },
-    });
-    if (existingOrder) {
+    if (await ticket.isReserved()) {
       throw new BadRequestError('Ticket is no longer available');
     }
 
     // User has 15 minutes to buy...
+    const expiration = new Date();
+    expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS);
 
     // Build the order and save it.
+    const order = Order.build({
+      userId: req.currentUser!.id,
+      status: OrderStatus.Created,
+      expiresAt: expiration,
+      ticket,
+    });
+
+    await order.save();
 
     // Emit order:created.
 
-    res.status(201).send({});
+    // TBD.
+
+    res.status(201).send(order);
   }
 );
 

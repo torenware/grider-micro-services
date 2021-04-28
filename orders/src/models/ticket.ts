@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { OrderStatus } from '@grider-courses/common';
+import { Order } from './orders';
 
 // Note this is not the same as the Ticket service's definition.
 
@@ -16,6 +18,7 @@ interface TicketModel extends mongoose.Model<TicketDoc> {
 export interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
+  isReserved(): Promise<boolean>;
 }
 
 const ticketSchema = new mongoose.Schema(
@@ -50,6 +53,25 @@ const ticketSchema = new mongoose.Schema(
 // This imposes TS type checking on build.
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
   return new Ticket(attrs);
+};
+
+// Factor some methods and put them here.  We need to use "this",
+// so arrow functions won't work:
+
+// tslint:disable-next-line: only-arrow-functions
+ticketSchema.statics.isReserved = async function () {
+  const existingOrder = await Order.findOne({
+    ticket: this,
+    status: {
+      $in: [
+        OrderStatus.Created,
+        OrderStatus.AwaitingPayment,
+        OrderStatus.Complete,
+      ],
+    },
+  });
+  // Make sure we return a boolean:
+  return !!existingOrder;
 };
 
 const Ticket = mongoose.model<TicketDoc, TicketModel>('Ticket', ticketSchema);
