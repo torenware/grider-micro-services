@@ -1,4 +1,4 @@
-module.export = {
+module.exports = {
   // make next a bit more responsive to fs changes.
   webpackDevMiddleware: config => {
     config.watchOptions.poll = 300;
