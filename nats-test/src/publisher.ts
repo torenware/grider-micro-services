@@ -16,6 +16,7 @@ stan.on('connect', async () => {
     id: '123',
     title: 'THE STONES',
     price: 50,
+    userId: 'wizard',
   };
 
   const publisher = new TicketCreatedPublisher(stan);

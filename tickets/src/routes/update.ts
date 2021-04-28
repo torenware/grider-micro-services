@@ -7,6 +7,8 @@ import {
   validateRequest,
 } from '@grider-courses/common';
 import { Ticket } from '../models/ticket';
+import { natsWrapper } from '../nats-wrapper';
+import { TicketUpdatedPublisher } from '../publishers/ticket-updated-publisher';
 
 const router = express.Router();
 
@@ -33,6 +35,17 @@ router.put(
     record!.title = req.body.title;
     record!.price = req.body.price;
     await record?.save();
+
+    // Send off our event.
+    const client = natsWrapper.client;
+    const publisher = new TicketUpdatedPublisher(client);
+
+    await publisher.publish({
+      id: ticket.id,
+      price: ticket.price,
+      title: ticket.title,
+      userId: ticket.userId,
+    });
 
     res.send(record);
   }

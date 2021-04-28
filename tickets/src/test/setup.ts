@@ -19,6 +19,9 @@ declare global {
   }
 }
 
+// Look for a file in __mocks__/
+jest.mock('../nats-wrapper');
+
 // No longer async. Note type is also changed.
 global.signinCookie = () => {
   // We need to build a mocked token and cookie.
@@ -60,6 +63,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  jest.clearAllMocks();
   const collections = await mongoose.connection.db.collections();
 
   for (const collection of collections) {
