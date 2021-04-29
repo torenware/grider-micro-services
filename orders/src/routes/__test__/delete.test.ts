@@ -101,4 +101,7 @@ it('emits an event on deleting a ticket', async () => {
   // We expect publish will be called twice, once for the
   // create, once for the delete.
   expect(natsWrapper.client.publish).toHaveBeenCalledTimes(2);
+  expect(natsWrapper.client.publish.mock.calls[1][0]).toEqual(
+    'order:cancelled'
+  );
 });
