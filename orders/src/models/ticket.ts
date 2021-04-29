@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { OrderStatus } from '@grider-courses/common';
 import { Order } from './orders';
 
@@ -17,6 +18,8 @@ interface TicketModel extends mongoose.Model<TicketDoc> {
 
 // Interface to describe a Ticket document.
 export interface TicketDoc extends mongoose.Document {
+  id: string;
+  version: number;
   title: string;
   price: number;
   isReserved(): Promise<boolean>;
@@ -49,6 +52,12 @@ const ticketSchema = new mongoose.Schema(
     },
   }
 );
+
+// We want to implement OCC (Optimistic Concurrency Control) to enforce
+// ordering of events.  This uses the following plugin.
+// @see https://www.npmjs.com/package/mongoose-update-if-current
+ticketSchema.set('versionKey', 'version');
+ticketSchema.plugin(updateIfCurrentPlugin);
 
 // Bundle a build func into the schema object.
 // This imposes TS type checking on build.

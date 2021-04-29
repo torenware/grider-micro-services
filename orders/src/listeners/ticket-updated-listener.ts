@@ -11,13 +11,25 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
     // console.log(`Handling ${this.subject} with msg`, data);
 
     const { id, title, price } = data;
-    const ticket = await Ticket.findById(id);
+
+    // To support OCC, we need to check both the ticket's id
+    // *and* its version. The updated version needs to be one
+    // more than what we already know about. If we have received
+    // this out of order, we need to throw and cope with the error.
+    const ticket = await Ticket.findOne({
+      _id: id,
+      version: data.version - 1,
+    });
+
     if (!ticket) {
+      // Note this will skip the ack(), and force
+      // the NATS server to resend the event.
       throw new Error('Ticket not found');
     } else {
       ticket.set({
         title,
         price,
+        version: data.version,
       });
     }
     await ticket.save();
