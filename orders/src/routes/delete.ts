@@ -1,8 +1,11 @@
 import express, { Request, Response } from 'express';
-import { requireAuth, NotFoundError } from '@grider-courses/common';
+import {
+  requireAuth,
+  NotFoundError,
+  OrderStatus,
+} from '@grider-courses/common';
 import { natsWrapper } from '../nats-wrapper';
 import { OrderCancelledPublisher } from '../publishers/order-cancelled-publisher';
-import { Ticket } from '../models/ticket';
 import { Order } from '../models/orders';
 
 const router = express.Router();
@@ -20,7 +23,11 @@ router.delete(
       throw new NotFoundError();
     }
     const ticketId = order.ticket.id!;
-    await order.deleteOne();
+    // await order.deleteOne();
+    // This is actually a pseudo-delete: we just mark the record
+    // as Cancelled.
+    order.status = OrderStatus.Cancelled;
+    order.save();
 
     // Emit order:cancelled.
     const publisher = new OrderCancelledPublisher(natsWrapper.client);

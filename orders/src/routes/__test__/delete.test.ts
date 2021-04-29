@@ -4,6 +4,7 @@ import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 import { Order } from '../../models/orders';
 import { natsWrapper } from '../../nats-wrapper';
+import { OrderStatus } from '@grider-courses/common';
 
 it('does not return a 404', async () => {
   const id = 'temp-will-not-work';
@@ -71,7 +72,11 @@ it('will delete a record if the user owns it and return 200', async () => {
 
   // But is it really gone?
   const recovery = await Order.findById(orderId);
-  expect(recovery).toBeNull();
+  // we do not actually delete the record.
+  expect(recovery).not.toBeNull();
+  if (recovery) {
+    expect(recovery.status).toEqual(OrderStatus.Cancelled);
+  }
 });
 
 it('emits an event on deleting a ticket', async () => {
@@ -101,7 +106,9 @@ it('emits an event on deleting a ticket', async () => {
   // We expect publish will be called twice, once for the
   // create, once for the delete.
   expect(natsWrapper.client.publish).toHaveBeenCalledTimes(2);
-  expect(natsWrapper.client.publish.mock.calls[1][0]).toEqual(
-    'order:cancelled'
-  );
+
+  // Get typescript to recognize our mock so we can test it.
+  // See: https://klzns.github.io/how-to-use-type-script-and-jest-mocks
+  const publishMock = natsWrapper.client.publish as jest.Mock;
+  expect(publishMock.mock.calls[1][0]).toEqual('order:cancelled');
 });
