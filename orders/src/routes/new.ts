@@ -10,8 +10,7 @@ import {
 import { natsWrapper } from '../nats-wrapper';
 import { Ticket } from '../models/ticket';
 import { Order } from '../models/orders';
-import e from 'express';
-
+import { OrderCreatedPublisher } from '../publishers/order-created-publisher';
 // Candidate for an env var:
 const EXPIRATION_WINDOW_SECONDS = 60 * 15;
 
@@ -51,8 +50,18 @@ router.post(
     await order.save();
 
     // Emit order:created.
+    const publisher = new OrderCreatedPublisher(natsWrapper.client);
 
-    // TBD.
+    await publisher.publish({
+      id: order.id,
+      userId: order.userId,
+      expiresAt: order.expiresAt.toUTCString(),
+      status: order.status,
+      ticket: {
+        id: ticket.id,
+        price: ticket.price,
+      },
+    });
 
     res.status(201).send(order);
   }

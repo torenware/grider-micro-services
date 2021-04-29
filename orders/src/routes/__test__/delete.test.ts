@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 import { Order } from '../../models/orders';
+import { natsWrapper } from '../../nats-wrapper';
 
 it('does not return a 404', async () => {
   const id = 'temp-will-not-work';
@@ -71,4 +72,33 @@ it('will delete a record if the user owns it and return 200', async () => {
   // But is it really gone?
   const recovery = await Order.findById(orderId);
   expect(recovery).toBeNull();
+});
+
+it('emits an event on deleting a ticket', async () => {
+  const cookie = global.signinCookie();
+  const ticket = Ticket.build({
+    title: 'Whattashow',
+    price: 10,
+  });
+  ticket.save();
+
+  const order = await request(app)
+    .post('/api/orders')
+    .set('Cookie', cookie)
+    .send({
+      ticketId: ticket.id,
+    })
+    .expect(201);
+
+  const orderId = order.body.id;
+
+  await request(app)
+    .delete(`/api/orders/${orderId}`)
+    .set('Cookie', cookie)
+    .send()
+    .expect(200);
+
+  // We expect publish will be called twice, once for the
+  // create, once for the delete.
+  expect(natsWrapper.client.publish).toHaveBeenCalledTimes(2);
 });
