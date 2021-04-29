@@ -295,7 +295,7 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@grider-courses/common@^1.0.6":
+"@grider-courses/common@^1.0.8":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@grider-courses/common/-/common-1.0.8.tgz#0282304ee8b91aecfb4af3c6a08c45cd9a8c8ab0"
   integrity sha512-aiE49d3431pe1kO6vcagJMpvwGJ/mCa7IfSIQhSlLpoavWBz7tiPcSE9yt7Wmk9ZU4v3c8pWg0rb36VzzAqswg==
