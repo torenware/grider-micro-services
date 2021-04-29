@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { OrderStatus } from '@grider-courses/common';
 import { TicketDoc } from './ticket';
 
@@ -58,6 +59,12 @@ const orderSchema = new mongoose.Schema(
     },
   }
 );
+
+// We want to implement OCC (Optimistic Concurrency Control) to enforce
+// ordering of events.  This uses the following plugin.
+// @see https://www.npmjs.com/package/mongoose-update-if-current
+orderSchema.set('versionKey', 'version');
+orderSchema.plugin(updateIfCurrentPlugin);
 
 // Bundle a build func into the schema object.
 orderSchema.statics.build = (attrs: OrderAttrs) => {

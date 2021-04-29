@@ -23,12 +23,14 @@ it('if logged in, return 404 if no such order id exists', async () => {
 it('if logged in, but the ticket exists but is not our user return 404', async () => {
   const ourCookie = global.signinCookie();
   const theirCookie = global.signinCookie();
+  const ticketId = new mongoose.Types.ObjectId().toHexString();
+
   const ticket = Ticket.build({
+    id: ticketId,
     title: 'Already Gone',
     price: 13,
   });
   await ticket.save();
-  const ticketId = ticket.id;
 
   // Create order under the other user.
   const theirResponse = await request(app)
@@ -50,12 +52,13 @@ it('if logged in, but the ticket exists but is not our user return 404', async (
 
 it('if the order exists, return it with a 200', async () => {
   const cookie = global.signinCookie();
+  const ticketId = new mongoose.Types.ObjectId().toHexString();
   const ticket = Ticket.build({
+    id: ticketId,
     title: 'Our Show',
     price: 13,
   });
   await ticket.save();
-  const ticketId = ticket.id;
 
   // Create our order
   const orderResponse = await request(app)

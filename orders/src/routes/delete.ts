@@ -34,6 +34,7 @@ router.delete(
 
     await publisher.publish({
       id: order.id,
+      version: order.version,
       userId: order.userId,
       ticket: {
         id: ticketId,
