@@ -54,6 +54,7 @@ router.post(
 
     await publisher.publish({
       id: order.id,
+      version: order.version,
       userId: order.userId,
       expiresAt: order.expiresAt.toUTCString(),
       status: order.status,

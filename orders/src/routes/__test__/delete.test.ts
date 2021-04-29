@@ -26,7 +26,9 @@ it('will return 404 if it does not exist.', async () => {
 it('will return 404 if the record does not belong to the user', async () => {
   const ourCookie = global.signinCookie();
   const theirCookie = global.signinCookie();
+  const id = new mongoose.Types.ObjectId().toHexString();
   const ticket = Ticket.build({
+    id,
     title: 'Not ours',
     price: 11,
   });
@@ -48,7 +50,9 @@ it('will return 404 if the record does not belong to the user', async () => {
 
 it('will delete a record if the user owns it and return 200', async () => {
   const cookie = global.signinCookie();
+  const id = new mongoose.Types.ObjectId().toHexString();
   const ticket = Ticket.build({
+    id,
     title: 'Ours this time',
     price: 11,
   });
@@ -81,7 +85,9 @@ it('will delete a record if the user owns it and return 200', async () => {
 
 it('emits an event on deleting a ticket', async () => {
   const cookie = global.signinCookie();
+  const id = new mongoose.Types.ObjectId().toHexString();
   const ticket = Ticket.build({
+    id,
     title: 'Whattashow',
     price: 10,
   });
