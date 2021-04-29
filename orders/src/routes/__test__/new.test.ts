@@ -2,7 +2,6 @@ import request from 'supertest';
 import { app } from '../../app';
 import mongoose from 'mongoose';
 import { Ticket } from '../../models/ticket';
-import { Order } from '../../models/orders';
 import { natsWrapper } from '../../nats-wrapper';
 
 it('does not return a 404', async () => {

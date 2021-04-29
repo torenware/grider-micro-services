@@ -22,7 +22,7 @@ router.delete(
     const ticketId = order.ticket.id!;
     await order.deleteOne();
 
-    // Emit order:created.
+    // Emit order:cancelled.
     const publisher = new OrderCancelledPublisher(natsWrapper.client);
 
     await publisher.publish({
