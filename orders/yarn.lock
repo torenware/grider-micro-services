@@ -296,9 +296,9 @@
     minimist "^1.2.0"
 
 "@grider-courses/common@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@grider-courses/common/-/common-1.0.6.tgz#feb05d03340861387dfcd407e5b8990a2c698b6c"
-  integrity sha512-Jnu199wMWY3aWVrgU2q6/1kO6ulodfJiVa7EcxTf9uuFafwwwasJ9eGC8q41Ge0637+pQnk7rDzgf2LXLpyGGQ==
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@grider-courses/common/-/common-1.0.8.tgz#0282304ee8b91aecfb4af3c6a08c45cd9a8c8ab0"
+  integrity sha512-aiE49d3431pe1kO6vcagJMpvwGJ/mCa7IfSIQhSlLpoavWBz7tiPcSE9yt7Wmk9ZU4v3c8pWg0rb36VzzAqswg==
   dependencies:
     "@types/cookie-session" "^2.0.42"
     "@types/express" "^4.17.11"
