@@ -14,6 +14,13 @@ interface TicketAttrs {
 // Add an interface to bless our extended User model.
 interface TicketModel extends mongoose.Model<TicketDoc> {
   build(attrs: TicketAttrs): TicketDoc;
+
+  // Create a query that makes sure events are processed
+  // in order (OCC).
+  findByEvent(event: {
+    id: string;
+    version: number;
+  }): Promise<TicketDoc | null>;
 }
 
 // Interface to describe a Ticket document.
@@ -67,6 +74,15 @@ ticketSchema.statics.build = (attrs: TicketAttrs) => {
     title: attrs.title,
     price: attrs.price,
   });
+};
+
+// Implementation of our OCC ticket fetcher:
+ticketSchema.statics.findByEvent = (event: { id: string; version: number }) => {
+  const ticket = Ticket.findOne({
+    _id: event.id,
+    version: event.version - 1,
+  });
+  return ticket;
 };
 
 // Factor some methods and put them here.  We need to use "this",

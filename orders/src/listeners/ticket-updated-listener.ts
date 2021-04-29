@@ -16,10 +16,7 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
     // *and* its version. The updated version needs to be one
     // more than what we already know about. If we have received
     // this out of order, we need to throw and cope with the error.
-    const ticket = await Ticket.findOne({
-      _id: id,
-      version: data.version - 1,
-    });
+    const ticket = await Ticket.findByEvent(data);
 
     if (!ticket) {
       // Note this will skip the ack(), and force
