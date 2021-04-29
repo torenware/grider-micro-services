@@ -5,6 +5,7 @@ import { Order } from './orders';
 // Note this is not the same as the Ticket service's definition.
 
 interface TicketAttrs {
+  id: string;
   title: string;
   price: number;
 }
@@ -52,7 +53,11 @@ const ticketSchema = new mongoose.Schema(
 // Bundle a build func into the schema object.
 // This imposes TS type checking on build.
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
-  return new Ticket(attrs);
+  return new Ticket({
+    _id: attrs.id,
+    title: attrs.title,
+    price: attrs.price,
+  });
 };
 
 // Factor some methods and put them here.  We need to use "this",
