@@ -59,7 +59,7 @@ ticketSchema.statics.build = (attrs: TicketAttrs) => {
 // so arrow functions won't work:
 
 // tslint:disable-next-line: only-arrow-functions
-ticketSchema.statics.isReserved = async function () {
+ticketSchema.methods.isReserved = async function () {
   const existingOrder = await Order.findOne({
     ticket: this,
     status: {

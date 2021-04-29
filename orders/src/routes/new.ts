@@ -29,7 +29,7 @@ router.post(
     // Make sure the ticket exists and isn't reserved.
     const ticket = await Ticket.findById(ticketId);
     if (!ticket) {
-      throw new NotFoundError();
+      throw new BadRequestError('Ticket was not found.');
     }
 
     if (await ticket.isReserved()) {
