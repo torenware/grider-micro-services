@@ -4,6 +4,7 @@ import {
   requireAuth,
   NotFoundError,
   NotAuthorizedError,
+  BadRequestError,
   validateRequest,
 } from '@grider-courses/common';
 import { Ticket } from '../models/ticket';
@@ -30,10 +31,17 @@ router.put(
       throw new NotAuthorizedError();
     }
 
+    if (ticket.isLocked()) {
+      throw new BadRequestError('Record is currently reserved and locked');
+    }
+
     // Now updated the record.
     const record = await Ticket.findById(req.params.id);
-    record!.title = req.body.title;
-    record!.price = req.body.price;
+    const { title, price } = req.body;
+    record!.set({
+      title,
+      price,
+    });
     await record?.save();
 
     // Send off our event.

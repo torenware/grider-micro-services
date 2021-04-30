@@ -2,6 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 import mongoose from 'mongoose';
 import { natsWrapper } from '../../nats-wrapper';
+import { Ticket } from '../../models/ticket';
 
 it('returns a 404 if the requested id does not exist', async () => {
   const ticketID = new mongoose.Types.ObjectId().toHexString();
@@ -116,4 +117,39 @@ it('emits an event on creating a ticket', async () => {
     .expect(201);
 
   expect(natsWrapper.client.publish).toHaveBeenCalledTimes(1);
+});
+
+it('will fail to update if the record is locked', async () => {
+  const cookie = global.signinCookie();
+
+  const newTicket = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+      title: 'Truly Our Record',
+      price: 11,
+    })
+    .expect(201);
+
+  const ticketID = newTicket.body.id;
+
+  // Now update the record with an orderId
+  const orderId = new mongoose.Types.ObjectId().toHexString();
+  const reservedTicket = await Ticket.findById(ticketID);
+  reservedTicket!.set({
+    orderId,
+  });
+  reservedTicket!.save();
+
+  // Is lock set?
+  expect(reservedTicket?.isLocked());
+
+  await request(app)
+    .put(`/api/tickets/${ticketID}`)
+    .set('Cookie', cookie)
+    .send({
+      title: 'The Eternal Triangle',
+      price: 11.5,
+    })
+    .expect(400);
 });
