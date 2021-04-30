@@ -6,6 +6,8 @@ import {
 } from '@grider-courses/common';
 import { queueGroupName } from './queue-group-name';
 import { Ticket } from '../models/ticket';
+import { natsWrapper } from '../nats-wrapper';
+import { TicketUpdatedPublisher } from '../publishers/ticket-updated-publisher';
 
 export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
   readonly subject = Subjects.OrderCancelled;
@@ -19,6 +21,15 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
     // Remove any orderId
     ticket.set({ orderId: null });
     await ticket.save();
+    // changed; emit an event.
+    const eventData = {
+      id: ticket.id,
+      userId: ticket.userId,
+      title: ticket.title,
+      price: ticket.price,
+      version: ticket.version,
+    };
+    new TicketUpdatedPublisher(natsWrapper.client).publish(eventData);
     msg.ack();
   }
 }

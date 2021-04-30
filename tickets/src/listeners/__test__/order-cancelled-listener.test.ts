@@ -53,4 +53,7 @@ it('causes an event to be reserved', async () => {
 
   // The message is acked
   expect(msg.ack).toHaveBeenCalledTimes(1);
+
+  // It emitted an event.
+  expect(natsWrapper.client.publish).toHaveBeenCalledTimes(1);
 });

@@ -2,6 +2,8 @@ import { Message } from 'node-nats-streaming';
 import { Listener, OrderCreatedEvent, Subjects } from '@grider-courses/common';
 import { queueGroupName } from './queue-group-name';
 import { Ticket } from '../models/ticket';
+import { natsWrapper } from '../nats-wrapper';
+import { TicketUpdatedPublisher } from '../publishers/ticket-updated-publisher';
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   readonly subject = Subjects.OrderCreated;
@@ -14,6 +16,15 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
     if (ticket) {
       ticket.set({ orderId: data.id });
       await ticket.save();
+      // Ticket has changed; emit an event.
+      const eventData = {
+        id: ticket.id,
+        userId: ticket.userId,
+        title: ticket.title,
+        price: ticket.price,
+        version: ticket.version,
+      };
+      new TicketUpdatedPublisher(natsWrapper.client).publish(eventData);
     } else {
       throw new Error('Ticket of this ID was not found');
     }
