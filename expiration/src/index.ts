@@ -1,4 +1,5 @@
 import { natsWrapper } from './nats-wrapper';
+import { OrderCreatedListener } from './listeners/order-created-listener';
 
 // Set up our start up of mongo via mongoose
 const start = async () => {
@@ -30,6 +31,8 @@ const start = async () => {
     // close down NATS.
     process.on('SIGTERM', () => client.close());
     process.on('SIGINT', () => client.close());
+
+    new OrderCreatedListener(natsWrapper.client).listen();
   } catch (err) {
     console.error(err);
   }
