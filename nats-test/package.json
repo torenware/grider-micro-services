@@ -8,7 +8,7 @@
     "listen": "ts-node-dev --rs --notify false src/listener.ts"
   },
   "dependencies": {
-    "@grider-courses/common": "^1.0.4",
+    "@grider-courses/common": "^1.0.10",
     "@types/node": "^15.0.0",
     "node-nats-streaming": "^0.3.2",
     "ts-node-dev": "^1.1.6",

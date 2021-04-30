@@ -295,10 +295,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@grider-courses/common@^1.0.3":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@grider-courses/common/-/common-1.0.9.tgz#5b8d30d9e33e083a57a1c576509c7891581b68e3"
-  integrity sha512-Mfk3HWqNzvl6g3HFwt/pB64+JH96f4JotUG4LSZ/bnjLnT48uvE3iz9hlN77gq2UT9qHongE3HBK/opumKobGg==
+"@grider-courses/common@^1.0.9":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@grider-courses/common/-/common-1.0.10.tgz#66e87ebe4a4186c1daf4b76d5fe2e1aab41044d5"
+  integrity sha512-gw3xoHCdoqcHM1UycY+oqVaf0uByAOujwtVOKSjlNj+Mq7biTwRQTrRTxdIWKIvsFfiy4mSZYHTAxvDo+j3XwA==
   dependencies:
     "@types/cookie-session" "^2.0.42"
     "@types/express" "^4.17.11"
