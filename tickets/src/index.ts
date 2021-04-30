@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { app } from './app';
 import { natsWrapper } from './nats-wrapper';
+import { OrderCreatedListener } from './listeners/order-created-listener';
+import { OrderCancelledListener } from './listeners/order-cancelled-listener';
 
 // Set up our start up of mongo via mongoose
 const start = async () => {
@@ -40,6 +42,10 @@ const start = async () => {
       console.log('NATS connection going down.');
       process.exit();
     });
+
+    // Bring up the listeners.
+    new OrderCreatedListener(client).listen();
+    new OrderCancelledListener(client).listen();
 
     // Register our process handlers so when the container goes away, we
     // close down NATS.
