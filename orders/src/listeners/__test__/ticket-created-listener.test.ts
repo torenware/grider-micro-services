@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { mocked } from 'ts-jest/utils';
 import { Message } from 'node-nats-streaming';
 import { TicketCreatedListener } from '../../listeners/ticket-created-listener';
 import { natsWrapper } from '../../nats-wrapper';

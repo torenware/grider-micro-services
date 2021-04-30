@@ -7,6 +7,7 @@ interface TicketAttrs {
   title: string;
   price: number;
   userId: string;
+  orderId?: string;
 }
 
 // Add an interface to bless our extended User model.
@@ -20,6 +21,8 @@ interface TicketDoc extends mongoose.Document {
   price: number;
   userId: string;
   version: number;
+  orderId?: string;
+  isLocked(): Promise<boolean>;
 }
 
 const ticketSchema = new mongoose.Schema(
@@ -35,6 +38,11 @@ const ticketSchema = new mongoose.Schema(
     userId: {
       type: String,
       required: true,
+    },
+    orderId: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   {
@@ -63,6 +71,10 @@ ticketSchema.plugin(updateIfCurrentPlugin);
 // This imposes TS type checking on build.
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
   return new Ticket(attrs);
+};
+
+ticketSchema.methods.isLocked = function () {
+  return !!this.orderId;
 };
 
 const Ticket = mongoose.model<TicketDoc, TicketModel>('Ticket', ticketSchema);
