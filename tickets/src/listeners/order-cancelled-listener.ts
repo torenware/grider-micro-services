@@ -6,7 +6,6 @@ import {
 } from '@grider-courses/common';
 import { queueGroupName } from './queue-group-name';
 import { Ticket } from '../models/ticket';
-import { natsWrapper } from '../nats-wrapper';
 import { TicketUpdatedPublisher } from '../publishers/ticket-updated-publisher';
 
 export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
@@ -29,7 +28,7 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
       price: ticket.price,
       version: ticket.version,
     };
-    new TicketUpdatedPublisher(natsWrapper.client).publish(eventData);
+    new TicketUpdatedPublisher(this.client).publish(eventData);
     msg.ack();
   }
 }
