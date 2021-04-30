@@ -26,7 +26,6 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
       ticket.set({
         title,
         price,
-        version: data.version,
       });
     }
     await ticket.save();
