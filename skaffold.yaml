@@ -35,6 +35,14 @@ build:
         manual:
           - src: 'src/***/*.ts'
             dest: .
+    - image: torenware/ticketer-payments
+      context: payments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/***/*.ts'
+            dest: .
     - image: torenware/ticketer-expiration
       context: expiration
       docker:
