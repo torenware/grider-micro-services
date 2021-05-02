@@ -24,7 +24,7 @@ const setUp = async () => {
     userId: 'i-got-nobody',
     version: 0,
     status: OrderStatus.Created,
-    expiresAt: new Date().toUTCString(),
+    expiresAt: new Date().toISOString(),
     ticket: {
       id: ticket.id,
       price: ticket.price,

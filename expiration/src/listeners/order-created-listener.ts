@@ -10,12 +10,14 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   async onMessage(data: OrderCreatedEvent['data'], msg: Message) {
     // Get the expire time in milliseconds.
     const delay = new Date(data.expiresAt).getTime() - new Date().getTime();
-
-    await expirationQueue.add({
+    const payload = {
       orderId: data.id,
-      opts: {
-        delay,
-      },
+    };
+    console.log(
+      `Set up order ${data.id} to expire with a delay of ${delay / 1000} secs.`
+    );
+    await expirationQueue.add(payload, {
+      delay,
     });
 
     msg.ack();

@@ -141,16 +141,16 @@ export const signOut = () => {
 
 // signUp('yaya@yayas.org', 'yayayayaya');
 
-// currentUser();
-// const data = createTicket('Show That Never Ends', 42);
-// const ticket = await data;
-// console.log('awaiting ticket at top level:', ticket);
-// data.then(rslt => {
-//   console.log(rslt);
-//   const ticketId = rslt.id;
-//   const orderPromise = createOrder(ticketId);
-//   orderPromise.then(order => {
-//     console.log('Order:', order);
-//   })
-// });
+currentUser();
+const data = createTicket('Show That Never Ends', 42);
+const ticket = await data;
+console.log('awaiting ticket at top level:', ticket);
+data.then(rslt => {
+  console.log(rslt);
+  const ticketId = rslt.id;
+  const orderPromise = createOrder(ticketId);
+  orderPromise.then(order => {
+    console.log('Order:', order);
+  })
+});
 

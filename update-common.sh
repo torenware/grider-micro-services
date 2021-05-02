@@ -1,6 +1,6 @@
 #! /usr/local/bin/bash
 
-DIRS="auth tickets orders nats-test expiration"
+DIRS="auth tickets orders nats-test expiration payments"
 
 for proj in $DIRS; do
   echo "-----------------"

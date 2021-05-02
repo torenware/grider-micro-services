@@ -12,7 +12,7 @@ import { Ticket } from '../models/ticket';
 import { Order } from '../models/orders';
 import { OrderCreatedPublisher } from '../publishers/order-created-publisher';
 // Candidate for an env var:
-const EXPIRATION_WINDOW_SECONDS = 60 * 15;
+const EXPIRATION_WINDOW_SECONDS = 60;
 
 const router = express.Router();
 

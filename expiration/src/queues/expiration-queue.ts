@@ -5,7 +5,6 @@ import { natsWrapper } from '../nats-wrapper';
 // Describe what goes in a job.
 interface Payload {
   orderId: string;
-  opts?: any;
 }
 
 const expirationQueue = new Queue<Payload>('order-expiration', {
@@ -17,6 +16,7 @@ const expirationQueue = new Queue<Payload>('order-expiration', {
 expirationQueue.process(async (job) => {
   // console.log('Process a job', job.data.orderId);
   // Emit our event
+  console.log(`Expiring order ${job.data.orderId}`);
   const event = {
     orderId: job.data.orderId,
   };

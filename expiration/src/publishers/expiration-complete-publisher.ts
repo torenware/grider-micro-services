@@ -1,3 +1,4 @@
+import { Stan } from 'node-nats-streaming';
 import {
   Publisher,
   Subjects,
