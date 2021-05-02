@@ -19,7 +19,7 @@ const router = express.Router();
 router.post(
   '/api/orders',
   requireAuth,
-  [body('ticketId').not().isEmpty()],
+  [body('ticketId').not().isEmpty().withMessage('ticketId must be supplied')],
   validateRequest,
 
   async (req: Request, res: Response) => {

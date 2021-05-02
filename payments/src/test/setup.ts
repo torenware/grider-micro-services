@@ -14,7 +14,7 @@ let mongo: any;
 declare global {
   namespace NodeJS {
     interface Global {
-      signinCookie(): string[];
+      signinCookie(userId?: string): string[];
     }
   }
 }
@@ -23,9 +23,9 @@ declare global {
 jest.mock('../nats-wrapper');
 
 // No longer async. Note type is also changed.
-global.signinCookie = () => {
+global.signinCookie = (userId: string) => {
   // We need to build a mocked token and cookie.
-  const fakeUserID = new mongoose.Types.ObjectId().toHexString();
+  const fakeUserID = userId || new mongoose.Types.ObjectId().toHexString();
 
   const payload = {
     id: fakeUserID,

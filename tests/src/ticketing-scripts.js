@@ -44,14 +44,13 @@ const loadCookie = () => {
 
 export const currentUser = async () => {
   const url = 'https://ticketing.local/api/users/currentuser';
-
+  console.log('current user');
   try {
     const response = await axios.get(url, loadOptions());
     console.log(response.data);
 
   }
   catch (err) {
-    console.log(err);
     console.log(err.toString());
 
   }
@@ -92,6 +91,22 @@ export const createOrder = async (ticketId) => {
     console.error(err.toString());
   }
   return {};
+};
+
+export const createPayment = async orderId => {
+  const url = 'https://ticketing.local/api/orders';
+  try {
+    const response = await axios.post(url, { orderId }, loadOptions());
+    // axios does not implement await correctly; you *always*
+    // get back a Promise<Pending>. This sucks. WTF?
+    return await response.data;
+  }
+  catch (err) {
+    console.log(err.stack);
+    console.error(err.toString());
+  }
+  return {};
+
 };
 
 // https://gist.github.com/nzvtrk/ebf494441e36200312faf82ce89de9f2
@@ -139,18 +154,55 @@ export const signOut = () => {
   }
 }
 
-// signUp('yaya@yayas.org', 'yayayayaya');
+const args = process.argv.slice(2);
 
-currentUser();
-const data = createTicket('Show That Never Ends', 42);
-const ticket = await data;
-console.log('awaiting ticket at top level:', ticket);
-data.then(rslt => {
-  console.log(rslt);
-  const ticketId = rslt.id;
-  const orderPromise = createOrder(ticketId);
-  orderPromise.then(order => {
-    console.log('Order:', order);
-  })
-});
+const dispatch = {
+  help: () => {
+    console.error('no help yet');
+  },
+  signUp: () => {
+    const email = args[1] || 'yaya@yayas.org';
+    const password = args[2] || 'yayayayaya';
+    signUp(email, password);
+  },
+  currentUser: () => {
+    currentUser();
+  },
+  payment: async () => {
+    const data = createTicket('Show That Never Ends', 42);
+    const ticket = await data;
+    console.log('awaiting ticket at top level:', ticket);
+    data.then(rslt => {
+      console.log(rslt);
+      const ticketId = rslt.id;
+      const orderPromise = createOrder(ticketId);
+      orderPromise.then(order => {
+        console.log('Order:', order);
+        const orderId = order.id;
+        const paymentPromise = createPayment(orderId);
+        paymentPromise.then(payment => {
+          console.log('Payment created');
+        });
+      })
+    });
+
+  }
+
+};
+
+
+// signUp('yaya@yayas.org', 'yayayayaya');
+if (!args[0]) {
+  dispatch.help();
+}
+else {
+  const command = args[0];
+  if (dispatch[command]) {
+    dispatch[command]();
+  }
+  else {
+    console.error(`No command "${command}"`);
+    dispatch.help();
+  }
+}
 

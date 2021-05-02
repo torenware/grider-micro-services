@@ -4,6 +4,7 @@ import 'express-async-errors';
 // The following initially shows a TS error, resolvable by installing @types/mongoose:
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
+import { createChargeRouter } from './routes/new';
 
 // app routes here
 
@@ -28,6 +29,7 @@ app.use(
 app.use(currentUser);
 
 // use routes here
+app.use(createChargeRouter);
 
 // Universal route to deal with 404s. Note this needs to be *before* the
 // call to errorHandler.
