@@ -44,8 +44,8 @@ const start = async () => {
     });
 
     // Bring up the listeners.
-    new OrderCreatedListener(natsWrapper.client).listen();
-    new OrderCancelledListener(natsWrapper.client).listen();
+    new OrderCreatedListener(client).listen();
+    new OrderCancelledListener(client).listen();
 
     // Register our process handlers so when the container goes away, we
     // close down NATS.

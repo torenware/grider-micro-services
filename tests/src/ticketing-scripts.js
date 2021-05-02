@@ -1,7 +1,6 @@
 import axios from 'axios';
 import https from 'https';
 import fs, { promises } from 'fs';
-import { SSL_OP_EPHEMERAL_RSA } from 'constants';
 
 const options = {
   httpsAgent: new https.Agent({
@@ -23,9 +22,7 @@ const loadOptions = () => {
 
 
 const writeCookie = async (data) => {
-  console.log('about to write');
   await promises.writeFile('./cookies.txt', data);
-  console.log('done writing we hope');
 };
 
 const loadCookie = () => {
@@ -45,7 +42,7 @@ const loadCookie = () => {
 };
 
 
-const currentUser = async () => {
+export const currentUser = async () => {
   const url = 'https://ticketing.local/api/users/currentuser';
 
   try {
@@ -60,7 +57,7 @@ const currentUser = async () => {
   }
 };
 
-const createTicket = async (title, price) => {
+export const createTicket = async (title, price) => {
   const data = {
     title,
     price: parseFloat(price)
@@ -79,7 +76,7 @@ const createTicket = async (title, price) => {
   return {};
 };
 
-const createOrder = async (ticketId) => {
+export const createOrder = async (ticketId) => {
   const data = {
     ticketId
   };
@@ -98,7 +95,7 @@ const createOrder = async (ticketId) => {
 };
 
 // https://gist.github.com/nzvtrk/ebf494441e36200312faf82ce89de9f2
-const signUp = async (email, password) => {
+export const signUp = async (email, password) => {
   const url = 'https://ticketing.local/api/users/signup';
 
   try {
@@ -115,7 +112,7 @@ const signUp = async (email, password) => {
   }
 };
 
-const signIn = async (email, password) => {
+export const signIn = async (email, password) => {
   const url = 'https://ticketing.local/api/users/signin';
 
   try {
@@ -134,7 +131,7 @@ const signIn = async (email, password) => {
   }
 };
 
-const signOut = () => {
+export const signOut = () => {
   // Just toss the cookie.
   if (fs.existsSync('./cookies.txt')) {
     fs.unlinkSync('./cookies.txt');
@@ -144,16 +141,16 @@ const signOut = () => {
 
 // signUp('yaya@yayas.org', 'yayayayaya');
 
-currentUser();
-const data = createTicket('Show That Never Ends', 42);
-const ticket = await data;
-console.log('awaiting ticket at top level:', ticket);
-data.then(rslt => {
-  console.log(rslt);
-  const ticketId = rslt.id;
-  const orderPromise = createOrder(ticketId);
-  orderPromise.then(order => {
-    console.log('Order:', order);
-  })
-});
+// currentUser();
+// const data = createTicket('Show That Never Ends', 42);
+// const ticket = await data;
+// console.log('awaiting ticket at top level:', ticket);
+// data.then(rslt => {
+//   console.log(rslt);
+//   const ticketId = rslt.id;
+//   const orderPromise = createOrder(ticketId);
+//   orderPromise.then(order => {
+//     console.log('Order:', order);
+//   })
+// });
 
