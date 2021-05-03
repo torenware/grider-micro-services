@@ -20,6 +20,10 @@ const start = async () => {
   if (!process.env.NATS_CLIENT_ID) {
     throw new Error('NATS_URL env must be defined');
   }
+  if (!process.env.STRIPE_KEY) {
+    throw new Error('STRIPE_KEY env must be defined');
+  }
+
   try {
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,

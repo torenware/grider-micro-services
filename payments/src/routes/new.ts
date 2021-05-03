@@ -8,8 +8,10 @@ import {
   OrderStatus,
   NotAuthorizedError,
 } from '@grider-courses/common';
+import { stripe } from '../stripe';
 
 import { Order } from '../models/orders';
+import { Payment } from '../models/payments';
 
 const router = express.Router();
 
@@ -37,7 +39,26 @@ router.post(
       throw new BadRequestError('Cannot pay for a cancelled or expired item');
     }
 
-    res.status(201).send({});
+    // @see https://stripe.com/docs/api/charges
+    const charge = await stripe.charges.create({
+      // amount is given in cents.
+      amount: order.price * 100,
+      currency: 'usd',
+      // description of charge for buyer.
+      description: 'Your ticket',
+      source: token,
+    });
+
+    // Create our payment record.
+    const payment = Payment.build({
+      orderId: order.id,
+      stripeId: charge.id,
+      version: 0,
+    });
+
+    await payment.save();
+
+    res.status(201).send(payment);
   }
 );
 

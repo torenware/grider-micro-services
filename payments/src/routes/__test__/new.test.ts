@@ -2,7 +2,9 @@ import request from 'supertest';
 import { app } from '../../app';
 import mongoose from 'mongoose';
 import { Order } from '../../models/orders';
+import { Payment } from '../../models/payments';
 import { natsWrapper } from '../../nats-wrapper';
+import { stripe } from '../../stripe';
 import { OrderStatus } from '@grider-courses/common';
 
 it('has a valid route that requires auth', async () => {
@@ -110,10 +112,19 @@ it('returns a payment with a code of 201', async () => {
     .set('Cookie', cookie)
     .send({
       orderId,
-      token: 'arbitrary',
+      token: 'tok_visa',
     })
     .expect(201);
 
+  // Check to see if the stripe mock got appropriately called.
+  expect(stripe.charges.create).toBeCalledTimes(1);
+  const stripeMock = stripe.charges.create as jest.Mock;
+  expect(stripeMock.mock.calls[0][0].amount).toEqual(order.price * 100);
+  // Our mock always returs:
+  const stripeId = 'stripe-charge-id';
   expect(response.body.id).not.toBeUndefined();
-  console.log(response.body);
+  const payment = await Payment.findById(response.body.id);
+  expect(payment).not.toBeNull();
+  expect(payment!.orderId).toEqual(orderId);
+  expect(payment!.stripeId).toEqual(stripeId);
 });

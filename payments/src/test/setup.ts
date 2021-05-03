@@ -21,6 +21,7 @@ declare global {
 
 // Look for a file in __mocks__/
 jest.mock('../nats-wrapper');
+jest.mock('../stripe');
 
 // No longer async. Note type is also changed.
 global.signinCookie = (userId: string) => {
