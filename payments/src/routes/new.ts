@@ -7,11 +7,14 @@ import {
   validateRequest,
   OrderStatus,
   NotAuthorizedError,
+  PaymentCreatedEvent,
 } from '@grider-courses/common';
 import { stripe } from '../stripe';
 
 import { Order } from '../models/orders';
 import { Payment } from '../models/payments';
+import { PaymentCreatedPublisher } from '../publishers/payment-created-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -57,6 +60,15 @@ router.post(
     });
 
     await payment.save();
+
+    // And we tell the world about it.
+    const event: PaymentCreatedEvent['data'] = {
+      id: payment!.id,
+      orderId: payment!.orderId,
+      stripeId: payment!.stripeId,
+      version: payment!.version,
+    };
+    new PaymentCreatedPublisher(natsWrapper.client).publish(event);
 
     res.status(201).send(payment);
   }

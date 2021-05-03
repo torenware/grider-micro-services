@@ -4,6 +4,7 @@ import { natsWrapper } from './nats-wrapper';
 import { TicketCreatedListener } from './listeners/ticket-created-listener';
 import { TicketUpdatedListener } from './listeners/ticket-updated-listener';
 import { ExpirationCompleteListener } from './listeners/expiration-complete-listener';
+import { PaymentCreatedListener } from './listeners/payment-created-listener';
 import { Ticket } from './models/ticket';
 
 // Set up our start up of mongo via mongoose
@@ -54,6 +55,7 @@ const start = async () => {
     new TicketCreatedListener(client).listen();
     new TicketUpdatedListener(client).listen();
     new ExpirationCompleteListener(client).listen();
+    new PaymentCreatedListener(client).listen();
   } catch (err) {
     console.error(err);
   }

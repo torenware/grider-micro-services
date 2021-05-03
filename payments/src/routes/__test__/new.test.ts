@@ -127,4 +127,12 @@ it('returns a payment with a code of 201', async () => {
   expect(payment).not.toBeNull();
   expect(payment!.orderId).toEqual(orderId);
   expect(payment!.stripeId).toEqual(stripeId);
+
+  // And it emits an event
+  expect(natsWrapper.client.publish).toHaveBeenCalledTimes(1);
+  const publishMock = natsWrapper.client.publish as jest.Mock;
+  expect(publishMock.mock.calls[0][0]).toEqual('payment:created');
+  expect(JSON.parse(publishMock.mock.calls[0][1]).orderId).toEqual(
+    payment!.orderId
+  );
 });
