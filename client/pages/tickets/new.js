@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Router from 'next/router';
 import useRequest from '../../hooks/use-request';
 
-const NewTicket = ({ currentUser }) => {
+const NewTicket = ({ currentUser, addFlash }) => {
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
 
@@ -14,7 +14,9 @@ const NewTicket = ({ currentUser }) => {
       price
     },
     onSuccess: () => {
-      Router.push('/');
+      addFlash('New ticket created');
+      Router.push('/', {
+      });
     }
   });
 
