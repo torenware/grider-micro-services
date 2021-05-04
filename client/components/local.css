@@ -1,13 +1,28 @@
 .disappear {
-  animation: fadeInAnimation ease 5s;
+  animation: fadeOutAnimation ease 5s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 }
-@keyframes fadeInAnimation {
+@keyframes fadeOutAnimation {
   0% {
       opacity: 1;
   }
   100% {
       opacity: 0;
   }
+}
+
+div.tickets label {
+  font-weight: bold;
+  display: block;
+}
+
+div.tickets div.row {
+  margin-top: 1.5em;
+}
+
+div.ticket-show label {
+  display: inline-block;
+  margin-right: 1em;
+  font-weight: bold;
 }

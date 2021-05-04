@@ -1,0 +1,43 @@
+import { useState, useEffect } from 'react';
+import { useRequest } from '../../hooks/use-request';
+
+
+const TicketLister = props => {
+  const [tickets, setTickets] = useState([]);
+
+  const { doRequest, errors } = useRequest({
+    url: '/api/tickets',
+    method: 'get',
+    body: {
+    },
+  });
+
+  useEffect(async () => {
+    const data = await doRequest();
+    if (!errors && data) {
+      setTickets(data);
+    }
+  }, []);
+
+
+  const rows = tickets.map(ticket => {
+    return (
+      <div className='row' ref={ticket.id}>
+        <div><strong>Title:</strong>{ticket.title}</div>
+        <div><strong>Price:</strong>{ticket.price}</div>
+      </div>
+    );
+  });
+
+  return (
+    <div>
+      <h1>Tickets On Sale</h1>
+      <div>
+        {rows}
+      </div>
+    </div>
+  );
+
+};
+
+export default TicketLister;

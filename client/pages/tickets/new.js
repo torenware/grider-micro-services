@@ -15,10 +15,18 @@ const NewTicket = ({ currentUser, addFlash }) => {
     },
     onSuccess: () => {
       addFlash('New ticket created');
-      Router.push('/', {
-      });
+      Router.push('/');
     }
   });
+
+  const onBlur = () => {
+    const value = parseFloat(price);
+    if (isNaN(value)) {
+      return; // let the server handle this.
+    }
+    setPrice(value.toFixed(2));
+
+  }
 
   const onSubmit = async event => {
     console.log('submit called');
