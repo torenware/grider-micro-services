@@ -26,3 +26,8 @@ div.ticket-show label {
   margin-right: 1em;
   font-weight: bold;
 }
+
+div.order-list .row {
+  margin-bottom: 1em;
+  border-bottom: thin solid black;
+}
