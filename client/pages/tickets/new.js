@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import Router from 'next/router';
 import useRequest from '../../hooks/use-request';
+import enforceLogin from '../../utils/redirect-to-login';
 
 const NewTicket = ({ currentUser, addFlash }) => {
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
+
+  enforceLogin(currentUser);
 
   const { doRequest, errors } = useRequest({
     url: '/api/tickets',
@@ -47,7 +50,7 @@ const NewTicket = ({ currentUser, addFlash }) => {
         <div className="form-group">
           <label>Price</label>
           <input
-            value={price} className="form-control" onChange={e => setPrice(e.target.value)}
+            value={price} className="form-control" onBlur={onBlur} onChange={e => setPrice(e.target.value)}
           />
         </div>
         <button className="btn btn-primary">Save</button>

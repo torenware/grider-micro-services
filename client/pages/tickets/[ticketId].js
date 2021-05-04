@@ -1,12 +1,25 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+import Router from 'next/router';
+import useRequest from '../../hooks/use-request';
 
-const TicketInfo = ({ ticket }) => {
-  const router = useRouter();
+const TicketInfo = ({ ticket, addFlash, currentUser }) => {
+  const ticketId = ticket.id;
+  const { doRequest, errors } = useRequest({
+    url: '/api/orders',
+    method: 'post',
+    body: {
+      ticketId,
+    },
+    onSuccess: (order) => {
+      console.log('order:', order);
+      addFlash('New order created');
+      Router.push(`/orders/${order.id}`);
+    }
+  });
 
-  const purchaseUrl = `purchase/${ticket.id}`;
-  console.log('ticket', ticket);
+  const onClick = () => {
+    doRequest();
+  };
+
   return (
     <div className="ticket-show">
       <h1>Ticket Details</h1>
@@ -14,8 +27,9 @@ const TicketInfo = ({ ticket }) => {
         <li><label>Title</label>{ticket.title}</li>
         <li><label>Price</label>{ticket.price}</li>
       </ul>
-      <Link href={purchaseUrl}  ><a className="btn btn-primary">Buy Ticket</a></Link>
-
+      {currentUser && currentUser.id &&
+        <button className="btn btn-primary" onClick={onClick} >Buy Ticket</button>
+      }
     </div>
   );
 };
@@ -23,6 +37,6 @@ const TicketInfo = ({ ticket }) => {
 TicketInfo.getInitialProps = async (context, client, currentUser) => {
   const { ticketId } = context.query;
   const { data } = await client.get(`/api/tickets/${ticketId}`);
-  return { ticket: data };
+  return { ticket: data, currentUser };
 }
 export default TicketInfo;

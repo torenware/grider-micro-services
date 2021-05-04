@@ -13,7 +13,7 @@ const LandingPage = ({ currentUser, tickets }) => {
   });
   return (
     <div>
-      {currentUser ? <h1>Signed into the site</h1> : <h1>Not signed in</h1>}
+      <h1>Tickets Up For Sale on GitTix</h1>
       <div className="container tickets">
         {rows}
       </div>
