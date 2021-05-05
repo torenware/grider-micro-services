@@ -1,10 +1,10 @@
 #! /usr/local/bin/bash
 
-minikube -p grider start --driver virtualbox --memory 6G
+#minikube -p grider start  --memory 4G
 echo "------------ MINIKUBE UP -------------"
-minikube -p grider addons enable ingress
-minikube -p grider addons enable metrics-server
-minikube -p grider ip
+#minikube -p grider addons enable ingress
+#minikube -p grider addons enable metrics-server
+#minikube -p grider ip
 
 # Since our ticketing resources expect this.
 kubectl create secret generic jwt-secret --from-literal JWT_KEY=supah-secret
