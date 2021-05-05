@@ -28,6 +28,7 @@ const useRequest = ({ url, method, body, onSuccess = null }) => {
             </pre>
           </div>
         );
+        console.error(errors);
         return;
       }
       setErrors(
@@ -40,6 +41,7 @@ const useRequest = ({ url, method, body, onSuccess = null }) => {
           </ul>
         </div>
       );
+      console.error(errors);
     }
   };
 

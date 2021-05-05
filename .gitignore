@@ -7,3 +7,6 @@ node_modules
 .next
 cookies.txt
 
+.env.*
+
+

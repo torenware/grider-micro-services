@@ -43,6 +43,7 @@ const UserOrders = ({ currentUser, orders }) => {
   return (
     <div>
       <h1>Your Orders</h1>
+      <h4>For User {currentUser.email}</h4>
 
       {orders.length ?
 

@@ -8,6 +8,7 @@ const LandingPage = ({ currentUser, tickets }) => {
       <div className='row' key={ticket.id}>
         <div className="col-sm"><label>Title:</label>{link}</div>
         <div className="col-sm"><label>Price:</label>{ticket.price}</div>
+        <div className="col-sm"><label>Available?:</label>{ticket.clientId}</div>
       </div>
     );
   });

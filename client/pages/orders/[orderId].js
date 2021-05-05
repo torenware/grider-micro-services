@@ -81,7 +81,7 @@ const PurchaseTicket = ({ order, currentUser }) => {
           token={processStripeToken}
           name={`Ticket: ${order.ticket.title}`}
           description="This is not a real service, so best not to use a real CC!!"
-          stripeKey="pk_test_51ImnsGKlT5z4v76HxqJELul8txZBjzjjNbmnMQwkKRipyaVgbyQmrBhGjSuQmFUSCTT1sSivATdMaYq7Hr9dKiTH00NGPAOGtR"
+          stripeKey={process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY}
           amount={order.ticket.price * 100}
           email={currentUser.email}
         >
@@ -120,7 +120,7 @@ PurchaseTicket.getInitialProps = async (context, client, currentUser) => {
   const { data: order } = await client.get(`/api/orders/${orderId}`);
   return {
     order,
-    currentUser
+    currentUser,
   };
 }
 
