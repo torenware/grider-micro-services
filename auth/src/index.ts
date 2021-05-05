@@ -3,6 +3,7 @@ import { app } from './app';
 
 // Set up our start up of mongo via mongoose
 const start = async () => {
+  console.log('starting auth service...');
   // Do a quick check that essential env variables are in fact
   // available to us:
   if (!process.env.JWT_KEY) {
