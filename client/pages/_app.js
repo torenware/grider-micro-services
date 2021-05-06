@@ -12,9 +12,8 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
   console.log('flash in component', pageProps.flashItems);
   useEffect(() => {
     if (pageProps.flashItems) {
-      console.log('flash found in effects');
       setTimeout(() => {
-        console.log('timmed out');
+        console.log('timed out');
         setShowFlash(false);
       }, 5 * 1000);
       setShowFlash(true);
