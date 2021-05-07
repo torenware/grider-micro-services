@@ -6,8 +6,13 @@ metadata:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: 'true'
     # TEMP: disable redirect to https
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/issuer: ca-issuer
 spec:
+  tls:
+    - hosts:
+      - ticketing.local
+      secretName: local-tls-secret
   rules:
     - host: ticketing.local
       http:

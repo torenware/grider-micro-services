@@ -46,7 +46,22 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
 
 AppComponent.getInitialProps = async appContext => {
   const client = await buildClient(appContext.ctx);
-  const { data } = await client.get('/api/users/currentuser');
+  let data;
+  try {
+    const resp = await client.get('/api/users/currentuser');
+    data = resp.data;
+  }
+  catch (err) {
+    console.error('dying inside getInitialProps');
+    const inServer = typeof window === 'undefined';
+    if (inServer) {
+      console.error('in server');
+    }
+    console.error(err.stack);
+    console.error(err.toString());
+    throw err;
+  }
+
 
   let pageProps = {};
 
