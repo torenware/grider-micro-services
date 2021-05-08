@@ -1,5 +1,4 @@
 // This file is "magic" for next
-import { useCookies } from 'react-cookie';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../components/local.css';
 import buildClient from '../api/build-client';
@@ -57,8 +56,6 @@ AppComponent.getInitialProps = async appContext => {
     if (inServer) {
       console.error('in server');
     }
-    console.error(err.stack);
-    console.error(err.toString());
     throw err;
   }
 
