@@ -40,8 +40,6 @@ const PurchaseTicket = ({ order, currentUser }) => {
     };
   }, []);
 
-  console.log(typeof stopTimer);
-
   // If the sale succeeds, stop the timer and
   // and update the page.
   const { doRequest, errors } = useRequest({
