@@ -93,11 +93,11 @@ export const createOrder = async (ticketId) => {
   return {};
 };
 
-export const createPayment = async (orderId, token) => {
+export const createPayment = async (orderId, token, ticketId) => {
   const url = 'https://ticketing.local/api/payments';
   let response;
   try {
-    response = await axios.post(url, { orderId, token }, loadOptions());
+    response = await axios.post(url, { orderId, token, ticketId }, loadOptions());
     // axios does not implement await correctly; you *always*
     // get back a Promise<Pending>. This sucks. WTF?
     return await response.data;
@@ -184,7 +184,7 @@ const dispatch = {
         const orderId = order.id;
         // we use the stripe library test token.
         const fakeToken = 'tok_visa';
-        const paymentPromise = createPayment(orderId, fakeToken);
+        const paymentPromise = createPayment(orderId, fakeToken, ticketId);
         paymentPromise.then(payment => {
           console.log('Payment created');
           console.log(payment);

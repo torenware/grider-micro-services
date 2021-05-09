@@ -25,6 +25,7 @@ router.post(
   [
     body('token').not().isEmpty().withMessage('Valid stripe token required'),
     body('orderId').not().isEmpty().withMessage('orderId required.'),
+    body('ticketId').not().isEmpty().withMessage('ticketId required'),
   ],
 
   validateRequest,
@@ -65,6 +66,7 @@ router.post(
     const event: PaymentCreatedEvent['data'] = {
       id: payment!.id,
       orderId: payment!.orderId,
+      ticketId: order.ticketId,
       stripeId: payment!.stripeId,
       version: payment!.version,
     };

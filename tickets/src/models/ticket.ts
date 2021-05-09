@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
+import {TicketStatus} from '@grider-courses/common';
 
 // Define a "new user" TS interface to limit the
 // attributes of a new user.
@@ -8,6 +9,7 @@ interface TicketAttrs {
   price: number;
   userId: string;
   orderId?: string;
+  status?: TicketStatus;
 }
 
 // Add an interface to bless our extended User model.
@@ -22,6 +24,7 @@ interface TicketDoc extends mongoose.Document {
   userId: string;
   version: number;
   orderId?: string;
+  status?: TicketStatus;
   isLocked(): Promise<boolean>;
 }
 
@@ -40,6 +43,11 @@ const ticketSchema = new mongoose.Schema(
       required: true,
     },
     orderId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    status: {
       type: String,
       required: false,
       default: null,

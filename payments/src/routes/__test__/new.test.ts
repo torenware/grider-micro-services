@@ -39,6 +39,7 @@ it('requires a token and a clientId', async () => {
 
 it('fails if the orderId does not exist', async () => {
   const orderId = new mongoose.Types.ObjectId().toHexString();
+  const ticketId = new mongoose.Types.ObjectId().toHexString();
   const cookie = global.signinCookie();
   await request(app)
     .post('/api/payments')
@@ -46,6 +47,7 @@ it('fails if the orderId does not exist', async () => {
     .send({
       token: 'not-real',
       orderId,
+      ticketId,
     })
     .expect(404);
 });
@@ -53,10 +55,12 @@ it('fails if the orderId does not exist', async () => {
 it('must have a valid orderId that belongs to the user', async () => {
   const userId = new mongoose.Types.ObjectId().toHexString();
   const orderId = new mongoose.Types.ObjectId().toHexString();
+  const ticketId = new mongoose.Types.ObjectId().toHexString();
   const wrongCookie = global.signinCookie();
   const order = Order.build({
     id: orderId,
     userId,
+    ticketId,
     status: OrderStatus.Created,
     version: 0,
     price: 22,
@@ -69,6 +73,7 @@ it('must have a valid orderId that belongs to the user', async () => {
     .send({
       token: 'not-real',
       orderId,
+      ticketId,
     })
     .expect(401);
 });
@@ -76,10 +81,12 @@ it('must have a valid orderId that belongs to the user', async () => {
 it('fails if the order is in a cancelled state', async () => {
   const userId = new mongoose.Types.ObjectId().toHexString();
   const orderId = new mongoose.Types.ObjectId().toHexString();
+  const ticketId = new mongoose.Types.ObjectId().toHexString();
   const cookie = global.signinCookie(userId);
   const order = Order.build({
     id: orderId,
     userId,
+    ticketId,
     status: OrderStatus.Cancelled,
     version: 0,
     price: 22,
@@ -91,6 +98,7 @@ it('fails if the order is in a cancelled state', async () => {
     .send({
       orderId,
       token: 'arbitrary',
+      ticketId,
     })
     .expect(400);
 });
@@ -98,10 +106,12 @@ it('fails if the order is in a cancelled state', async () => {
 it('returns a payment with a code of 201', async () => {
   const userId = new mongoose.Types.ObjectId().toHexString();
   const orderId = new mongoose.Types.ObjectId().toHexString();
+  const ticketId = new mongoose.Types.ObjectId().toHexString();
   const cookie = global.signinCookie(userId);
   const order = Order.build({
     id: orderId,
     userId,
+    ticketId,
     status: OrderStatus.Created,
     version: 0,
     price: 22,
@@ -113,6 +123,7 @@ it('returns a payment with a code of 201', async () => {
     .send({
       orderId,
       token: 'tok_visa',
+      ticketId,
     })
     .expect(201);
 

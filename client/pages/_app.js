@@ -1,5 +1,4 @@
 // This file is "magic" for next
-import { useCookies } from 'react-cookie';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../components/local.css';
 import buildClient from '../api/build-client';
@@ -12,9 +11,8 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
   console.log('flash in component', pageProps.flashItems);
   useEffect(() => {
     if (pageProps.flashItems) {
-      console.log('flash found in effects');
       setTimeout(() => {
-        console.log('timmed out');
+        console.log('timed out');
         setShowFlash(false);
       }, 5 * 1000);
       setShowFlash(true);
@@ -47,7 +45,20 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
 
 AppComponent.getInitialProps = async appContext => {
   const client = await buildClient(appContext.ctx);
-  const { data } = await client.get('/api/users/currentuser');
+  let data;
+  try {
+    const resp = await client.get('/api/users/currentuser');
+    data = resp.data;
+  }
+  catch (err) {
+    console.error('dying inside getInitialProps');
+    const inServer = typeof window === 'undefined';
+    if (inServer) {
+      console.error('in server');
+    }
+    throw err;
+  }
+
 
   let pageProps = {};
 
