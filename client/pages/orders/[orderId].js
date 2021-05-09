@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import StripeCheckout from 'react-stripe-checkout';
 import useRequest from '../../hooks/use-request';
 import enforceLogin from '../../utils/redirect-to-login';
+import ErrorPage from '../404';
 
 const PurchaseTicket = ({ order, currentUser }) => {
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -9,6 +10,11 @@ const PurchaseTicket = ({ order, currentUser }) => {
   const [timerId, setTimerId] = useState(false);
 
   enforceLogin(currentUser);
+
+  if (!order) {
+    return <ErrorPage />;
+
+  }
 
   const orderId = order.id;
 
@@ -116,9 +122,17 @@ const PurchaseTicket = ({ order, currentUser }) => {
   );
 }
 
+
 PurchaseTicket.getInitialProps = async (context, client, currentUser) => {
   const { orderId } = context.query;
+
+  console.log('entery order-id try-block');
   const { data: order } = await client.get(`/api/orders/${orderId}`);
+  console.log('get did not throw');
+  if (!order || !order.id) {
+    throw new Error('Order not found');
+  }
+  console.log('order', order);
   return {
     order,
     currentUser,
