@@ -4,9 +4,14 @@ import '../components/local.css';
 import buildClient from '../api/build-client';
 import Header from '../components/header';
 import { useState, useEffect } from 'react';
+import ErrorPage from './404';
 
 
 const AppComponent = ({ Component, pageProps, currentUser }) => {
+  if (pageProps.statusCode) {
+    return <ErrorPage />;
+  }
+
   const [showFlash, setShowFlash] = useState(false);
   console.log('flash in component', pageProps.flashItems);
   useEffect(() => {
@@ -65,7 +70,12 @@ AppComponent.getInitialProps = async appContext => {
   if (appContext.Component.getInitialProps) {
     // To save doing this in the wrapped Component, pass client
     // and currentUser to its pageProps.
-    pageProps = await appContext.Component.getInitialProps(appContext.ctx, client, data.currentUser);
+    try {
+      pageProps = await appContext.Component.getInitialProps(appContext.ctx, client, data.currentUser);
+    }
+    catch (err) {
+      pageProps.statusCode = err.statusCode ? err.statusCode : 404;
+    }
   }
 
 

@@ -44,10 +44,9 @@ const loadCookie = () => {
 
 export const currentUser = async () => {
   const url = 'https://ticketing.local/api/users/currentuser';
-  console.log('current user');
   try {
     const response = await axios.get(url, loadOptions());
-    console.log(response.data);
+    console.log('currentuser:', response.data);
 
   }
   catch (err) {
@@ -87,7 +86,7 @@ export const createOrder = async (ticketId) => {
     return await response.data;
   }
   catch (err) {
-    console.error('threw in createTicket');
+    console.error('threw in createOrder');
     console.error(err.toString());
   }
   return {};
@@ -113,7 +112,7 @@ export const createPayment = async (orderId, token, ticketId) => {
 };
 
 // https://gist.github.com/nzvtrk/ebf494441e36200312faf82ce89de9f2
-export const signUp = async (email, password) => {
+export const signup = async (email, password) => {
   const url = 'https://ticketing.local/api/users/signup';
 
   try {
@@ -130,7 +129,7 @@ export const signUp = async (email, password) => {
   }
 };
 
-export const signIn = async (email, password) => {
+export const signin = async (email, password) => {
   const url = 'https://ticketing.local/api/users/signin';
 
   try {
@@ -149,7 +148,7 @@ export const signIn = async (email, password) => {
   }
 };
 
-export const signOut = () => {
+export const signout = () => {
   // Just toss the cookie.
   if (fs.existsSync('./cookies.txt')) {
     fs.unlinkSync('./cookies.txt');
@@ -163,24 +162,23 @@ const dispatch = {
   help: () => {
     console.error('no help yet');
   },
-  signUp: () => {
+  signup: () => {
     const email = args[1] || 'yaya@yayas.org';
     const password = args[2] || 'yayayayaya';
-    signUp(email, password);
+    signup(email, password);
   },
-  currentUser: () => {
+  currentuser: () => {
     currentUser();
   },
   payment: async () => {
     const data = createTicket('Show That Never Ends', 42);
     const ticket = await data;
-    console.log('awaiting ticket at top level:', ticket);
-    data.then(rslt => {
-      console.log(rslt);
+     data.then(rslt => {
+      console.log('ticket:', rslt);
       const ticketId = rslt.id;
       const orderPromise = createOrder(ticketId);
       orderPromise.then(order => {
-        console.log('Order:', order);
+        console.log('order:', order);
         const orderId = order.id;
         // we use the stripe library test token.
         const fakeToken = 'tok_visa';

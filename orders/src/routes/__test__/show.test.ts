@@ -3,6 +3,26 @@ import mongoose from 'mongoose';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 
+it('handles illegal id as a 404', async () => {
+  const cookie = global.signinCookie();
+  const id = 'junk';
+  const response = await request(app)
+    .get(`/api/orders/${id}`)
+    .set('Cookie', cookie)
+    .send({});
+  expect(response.status).toEqual(404);
+});
+
+it('returns a 404 if the id does not exist', async () => {
+  const cookie = global.signinCookie();
+  const id = mongoose.Types.ObjectId().toHexString();
+  const response = await request(app)
+    .get(`/api/orders/${id}`)
+    .set('Cookie', cookie)
+    .send({});
+  expect(response.status).toEqual(404);
+});
+
 it('does not return a 404', async () => {
   const id = 'temp-will-not-work';
   const response = await request(app).get(`/api/orders/${id}`).send({});
