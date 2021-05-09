@@ -12,9 +12,11 @@ const setUp = async () => {
 
   // Create a test order
   const id = new mongoose.Types.ObjectId().toHexString();
+  const ticketId = new mongoose.Types.ObjectId().toHexString();
   const order = Order.build({
     id,
     userId: 'i-got-nobody',
+    ticketId,
     version: 0,
     status: OrderStatus.Created,
     price: 20,

@@ -3,6 +3,7 @@ import {
   Listener,
   OrderCancelledEvent,
   Subjects,
+  TicketStatus,
 } from '@grider-courses/common';
 import { queueGroupName } from './queue-group-name';
 import { Ticket } from '../models/ticket';
@@ -18,7 +19,10 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
       throw new Error('Ticket was not found');
     }
     // Remove any orderId
-    ticket.set({ orderId: null });
+    ticket.set({
+      orderId: null,
+      status: TicketStatus.Available,
+    });
     await ticket.save();
     // changed; emit an event.
     const eventData = {
@@ -27,6 +31,7 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
       title: ticket.title,
       price: ticket.price,
       version: ticket.version,
+      status: ticket.status,
     };
     new TicketUpdatedPublisher(this.client).publish(eventData);
     msg.ack();

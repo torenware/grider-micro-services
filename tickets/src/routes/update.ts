@@ -54,6 +54,7 @@ router.put(
       price: ticket.price,
       title: ticket.title,
       userId: ticket.userId,
+      status: ticket.status,
     });
 
     res.send(record);

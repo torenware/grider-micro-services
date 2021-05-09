@@ -1,6 +1,10 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { requireAuth, validateRequest } from '@grider-courses/common';
+import {
+  requireAuth,
+  validateRequest,
+  TicketStatus,
+} from '@grider-courses/common';
 import { Ticket } from '../models/ticket';
 import { TicketCreatedPublisher } from '../publishers/ticket-created-publisher';
 import { natsWrapper } from '../nats-wrapper';
@@ -22,6 +26,7 @@ router.post(
       title,
       price,
       userId: req.currentUser!.id,
+      status: TicketStatus.Available,
     });
     await ticket.save();
 

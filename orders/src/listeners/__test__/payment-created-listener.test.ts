@@ -33,6 +33,7 @@ const setUp = async () => {
   const event: PaymentCreatedEvent['data'] = {
     id,
     orderId: order._id,
+    ticketId,
     stripeId: 'some-long-id',
     version: 0,
   };

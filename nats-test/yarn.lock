@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@grider-courses/common@^1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@grider-courses/common/-/common-1.0.18.tgz#df61eb8d16726df6d73d754928b6c06332855ba3"
-  integrity sha512-OVfTXSABZVgNQ7bKO+2o2CcEWfesOep+awC+QH4DccQZYWE3YspoXAl0sJVwCpLpUTZSJZyChmF4F+n4Gbs/iQ==
+"@grider-courses/common@^1.0.20":
+  version "1.0.20"
+  resolved "https://registry.yarnpkg.com/@grider-courses/common/-/common-1.0.20.tgz#e87cd73d15ebdbb3e307f92156d3b04528e80536"
+  integrity sha512-KUHw+8uoS9dy7bmvyEeczjRK+pwhB63tK9zSM8r/c+v2rQdoU+eBMzaCsQUcVZH+o9DToSNvbS/ywMqj2RbxMg==
   dependencies:
     "@types/cookie-session" "^2.0.42"
     "@types/express" "^4.17.11"

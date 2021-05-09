@@ -27,8 +27,12 @@ const TicketInfo = ({ ticket, addFlash, currentUser }) => {
         <li><label>Title</label>{ticket.title}</li>
         <li><label>Price</label>{ticket.price}</li>
       </ul>
-      {currentUser && currentUser.id &&
+      {currentUser && currentUser.id && ticket.status === 'available' &&
         <button className="btn btn-primary" onClick={onClick} >Buy Ticket</button>
+      }
+      {ticket.status !== 'available' &&
+        <p>This ticket is no longer available for sale.</p>
+
       }
     </div>
   );

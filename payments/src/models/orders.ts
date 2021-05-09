@@ -10,6 +10,7 @@ interface OrderAttrs {
   status: OrderStatus;
   version: number;
   price: number;
+  ticketId: string;
 }
 
 // Add an interface to bless our extended User model.
@@ -24,6 +25,7 @@ interface OrderDoc extends mongoose.Document {
   version: number;
   status: OrderStatus;
   price: number;
+  ticketId: string;
 }
 
 // Note that version is supplied by the superclass,
@@ -31,6 +33,10 @@ interface OrderDoc extends mongoose.Document {
 const orderSchema = new mongoose.Schema(
   {
     id: {
+      type: String, // mongoose type, not TS
+      required: true,
+    },
+    ticketId: {
       type: String, // mongoose type, not TS
       required: true,
     },

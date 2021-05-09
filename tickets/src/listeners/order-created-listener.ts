@@ -1,5 +1,10 @@
 import { Message } from 'node-nats-streaming';
-import { Listener, OrderCreatedEvent, Subjects } from '@grider-courses/common';
+import {
+  Listener,
+  OrderCreatedEvent,
+  Subjects,
+  TicketStatus,
+} from '@grider-courses/common';
 import { queueGroupName } from './queue-group-name';
 import { Ticket } from '../models/ticket';
 import { TicketUpdatedPublisher } from '../publishers/ticket-updated-publisher';
@@ -13,7 +18,10 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
     const ticket = await Ticket.findById(data.ticket.id);
     // Could fail!
     if (ticket) {
-      ticket.set({ orderId: data.id });
+      ticket.set({
+        orderId: data.id,
+        status: TicketStatus.Reserved,
+      });
       await ticket.save();
       // Ticket has changed; emit an event.
       const eventData = {
@@ -22,6 +30,7 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
         title: ticket.title,
         price: ticket.price,
         version: ticket.version,
+        status: ticket.status,
       };
       new TicketUpdatedPublisher(this.client).publish(eventData);
     } else {

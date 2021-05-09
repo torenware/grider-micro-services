@@ -43,6 +43,7 @@ const PurchaseTicket = ({ order, currentUser }) => {
     method: 'post',
     body: {
       orderId,
+      ticketId: order.ticket.id
       // must supply token at doRequest time.
     },
     onSuccess: (token) => {
