@@ -36,3 +36,9 @@ const setUp = async () => {
   // Tell us how to find the ticket.
   return { listener, event, msg };
 };
+
+it('calls ack', async () => {
+  const { listener, event, msg } = await setUp();
+  await listener.onMessage(event, msg);
+  expect(msg.ack).toHaveBeenCalledTimes(1);
+});
