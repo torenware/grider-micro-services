@@ -1,4 +1,5 @@
 // This file is "magic" for next
+import Head from 'next/head'
 import 'bootstrap/dist/css/bootstrap.css';
 import '../components/local.css';
 import buildClient from '../api/build-client';
@@ -37,6 +38,9 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
 
   return (
     <div>
+      <Head>
+        <title>Fake Tickets!</title>
+      </Head>
       <Header currentUser={currentUser} />
       <div className='container'>
         {showFlash && disappearingAlert(pageProps.flashItems)}
