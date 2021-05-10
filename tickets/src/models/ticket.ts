@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
-import {TicketStatus} from '@grider-courses/common';
+import { TicketStatus } from '@grider-courses/common';
+
+// Old plugin for autoincrement.
+// tslint:disable-next-line: no-var-requires
+const autoIncrement = require('mongoose-auto-increment');
 
 // Define a "new user" TS interface to limit the
 // attributes of a new user.
@@ -25,6 +29,7 @@ interface TicketDoc extends mongoose.Document {
   version: number;
   orderId?: string;
   status?: TicketStatus;
+  serial?: number;
   isLocked(): Promise<boolean>;
 }
 
@@ -52,6 +57,11 @@ const ticketSchema = new mongoose.Schema(
       required: false,
       default: null,
     },
+    // serial: {
+    //   type: String,
+    //   required: true,
+    //   default: null,
+    // },
   },
   {
     // We want to normalize mongodb's output by removing
