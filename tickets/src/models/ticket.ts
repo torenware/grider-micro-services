@@ -1,10 +1,7 @@
 import mongoose from 'mongoose';
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { TicketStatus } from '@grider-courses/common';
-
-// Old plugin for autoincrement.
-// tslint:disable-next-line: no-var-requires
-const autoIncrement = require('mongoose-auto-increment');
+import { Serial } from './serial';
 
 // Define a "new user" TS interface to limit the
 // attributes of a new user.
@@ -59,8 +56,9 @@ const ticketSchema = new mongoose.Schema(
       default: null,
     },
     serial: {
-      type: String,
-      required: true,
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   {
@@ -88,12 +86,12 @@ ticketSchema.plugin(updateIfCurrentPlugin);
 // Test pre hook
 ticketSchema.pre('save', async function (next) {
   const record = this as TicketDoc;
-  console.log('pre hook was called');
   if (this.isNew) {
-    console.log('Record is new');
-    console.log(this);
-
-    record.serial = 42;
+    const counter = await Serial.singleton({
+      name: 'tickets',
+      counter: 1000,
+    });
+    record.serial = await counter.serial('tickets');
   }
   next();
 });

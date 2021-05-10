@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Ticket, TicketDoc } from './ticket';
+import { Ticket } from './ticket';
 
 // Old plugin for autoincrement.
 // tslint:disable-next-line: no-var-requires
@@ -10,6 +10,7 @@ export const buildConnection = async () => {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
+    useFindAndModify: false,
   });
 
   autoIncrement.initialize(conn);
