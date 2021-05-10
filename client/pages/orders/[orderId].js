@@ -40,8 +40,6 @@ const PurchaseTicket = ({ order, currentUser }) => {
     };
   }, []);
 
-  console.log(typeof stopTimer);
-
   // If the sale succeeds, stop the timer and
   // and update the page.
   const { doRequest, errors } = useRequest({
@@ -126,13 +124,11 @@ const PurchaseTicket = ({ order, currentUser }) => {
 PurchaseTicket.getInitialProps = async (context, client, currentUser) => {
   const { orderId } = context.query;
 
-  console.log('entery order-id try-block');
   const { data: order } = await client.get(`/api/orders/${orderId}`);
   console.log('get did not throw');
   if (!order || !order.id) {
     throw new Error('Order not found');
   }
-  console.log('order', order);
   return {
     order,
     currentUser,

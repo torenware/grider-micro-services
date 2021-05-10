@@ -10,6 +10,7 @@ import { createTicketRouter } from './routes/new';
 import { fetchTicketRouter } from './routes/show';
 import { getTicketsRouter } from './routes';
 import { updateTicketRouter } from './routes/update';
+import { offeredTicketsRouter } from './routes/offered';
 
 import {
   errorHandler,
@@ -33,6 +34,7 @@ app.use(currentUser);
 
 // use routes here
 app.use(createTicketRouter);
+app.use(offeredTicketsRouter);
 app.use(fetchTicketRouter);
 app.use(getTicketsRouter);
 app.use(updateTicketRouter);
