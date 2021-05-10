@@ -13,7 +13,7 @@ const UserTickets = ({ currentUser, tickets }) => {
           {ticket.title}
         </div>
         <div className="col-sm">
-          {ticket.price}
+          ${ticket.price.toFixed(2)}
         </div>
         <div className="col-sm">
           {ticket.status}

@@ -111,7 +111,7 @@ const PurchaseTicket = ({ order, currentUser }) => {
   return (
     <div>
       <h1>Complete Your Purchase</h1>
-      <p>for "{order.ticket.title}" at {order.ticket.price} USD.</p>
+      <p>for "{order.ticket.title}" at ${order.ticket.price.toFixed(2)} USD.</p>
       <div>
         {fullContent()}
       </div>
