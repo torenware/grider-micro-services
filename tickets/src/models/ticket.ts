@@ -14,6 +14,7 @@ interface TicketAttrs {
   userId: string;
   orderId?: string;
   status?: TicketStatus;
+  serial?: number;
 }
 
 // Add an interface to bless our extended User model.
@@ -57,11 +58,10 @@ const ticketSchema = new mongoose.Schema(
       required: false,
       default: null,
     },
-    // serial: {
-    //   type: String,
-    //   required: true,
-    //   default: null,
-    // },
+    serial: {
+      type: String,
+      required: true,
+    },
   },
   {
     // We want to normalize mongodb's output by removing
@@ -84,6 +84,19 @@ const ticketSchema = new mongoose.Schema(
 // @see https://www.npmjs.com/package/mongoose-update-if-current
 ticketSchema.set('versionKey', 'version');
 ticketSchema.plugin(updateIfCurrentPlugin);
+
+// Test pre hook
+ticketSchema.pre('save', async function (next) {
+  const record = this as TicketDoc;
+  console.log('pre hook was called');
+  if (this.isNew) {
+    console.log('Record is new');
+    console.log(this);
+
+    record.serial = 42;
+  }
+  next();
+});
 
 // Bundle a build func into the schema object.
 // This imposes TS type checking on build.

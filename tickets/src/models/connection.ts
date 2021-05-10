@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Ticket } from './ticket';
+import { Ticket, TicketDoc } from './ticket';
 
 // Old plugin for autoincrement.
 // tslint:disable-next-line: no-var-requires
