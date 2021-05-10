@@ -162,10 +162,22 @@ const dispatch = {
   help: () => {
     console.error('no help yet');
   },
-  signup: () => {
-    const email = args[1] || 'yaya@yayas.org';
-    const password = args[2] || 'yayayayaya';
+  signup: (email, password) => {
+    email = email || 'yaya@yayas.org';
+    password = password || 'yayayayaya';
     signup(email, password);
+  },
+  signin: (email, pw) => {
+    if (!email || !pw) {
+      console.error('usage: signin email pw');
+      return;
+    }
+    console.log('email', email, 'pw', pw);
+    signin(email, pw);
+  },
+  signout: () => {
+    signout();
+    console.log('logged out');
   },
   currentuser: () => {
     currentUser();
@@ -173,7 +185,7 @@ const dispatch = {
   payment: async () => {
     const data = createTicket('Show That Never Ends', 42);
     const ticket = await data;
-     data.then(rslt => {
+    data.then(rslt => {
       console.log('ticket:', rslt);
       const ticketId = rslt.id;
       const orderPromise = createOrder(ticketId);
@@ -188,8 +200,16 @@ const dispatch = {
           console.log(payment);
         });
       })
-    });
+    })
+  },
 
+  ticket: async (...titles) => {
+    console.log(titles);
+    for (const ndx in titles) {
+      console.log('title:', titles[ndx]);
+      const price = parseFloat((10 + Math.random() * 60).toFixed(2));
+      await createTicket(titles[ndx], price);
+    }
   }
 
 };
@@ -202,7 +222,7 @@ if (!args[0]) {
 else {
   const command = args[0];
   if (dispatch[command]) {
-    dispatch[command]();
+    dispatch[command](...args.slice(1));
   }
   else {
     console.error(`No command "${command}"`);

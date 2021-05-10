@@ -25,7 +25,7 @@ const TicketInfo = ({ ticket, addFlash, currentUser }) => {
       <h1>Ticket Details</h1>
       <ul>
         <li><label>Title</label>{ticket.title}</li>
-        <li><label>Price</label>{ticket.price}</li>
+        <li><label>Price</label>${ticket.price.toFixed(2)}</li>
       </ul>
       {currentUser && currentUser.id && ticket.status === 'available' &&
         <button className="btn btn-primary" onClick={onClick} >Buy Ticket</button>
