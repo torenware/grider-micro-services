@@ -32,7 +32,7 @@ div.ticket-show label {
   font-weight: bold;
 }
 
-div.order-list .row {
+div.order-list .row, div.ticket-list .row {
   margin-bottom: 1em;
   border-bottom: thin solid black;
 }
