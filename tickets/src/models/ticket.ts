@@ -27,7 +27,7 @@ interface TicketDoc extends mongoose.Document {
   version: number;
   orderId?: string;
   status?: TicketStatus;
-  serial?: number;
+  serial: number;
   isLocked(): Promise<boolean>;
 }
 

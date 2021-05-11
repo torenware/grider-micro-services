@@ -8,6 +8,7 @@ it('implements OCC (optimistic concurrency control)', async () => {
   const ticketId = new mongoose.Types.ObjectId().toHexString();
   const ticket = Ticket.build({
     id: ticketId,
+    serial: 1000,
     title: 'Cool Show',
     price: 20,
   });
@@ -52,6 +53,7 @@ it('increments the version number on save.', async () => {
   const ticketId = new mongoose.Types.ObjectId().toHexString();
   const ticket = Ticket.build({
     id: ticketId,
+    serial: 1000,
     title: 'Cool Show',
     price: 20,
   });

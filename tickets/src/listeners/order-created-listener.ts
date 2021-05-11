@@ -26,6 +26,7 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
       // Ticket has changed; emit an event.
       const eventData = {
         id: ticket.id,
+        serial: ticket.serial,
         userId: ticket.userId,
         title: ticket.title,
         price: ticket.price,
