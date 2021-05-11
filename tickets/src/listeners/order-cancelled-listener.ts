@@ -27,6 +27,7 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
     // changed; emit an event.
     const eventData = {
       id: ticket.id,
+      serial: ticket.serial,
       userId: ticket.userId,
       title: ticket.title,
       price: ticket.price,
