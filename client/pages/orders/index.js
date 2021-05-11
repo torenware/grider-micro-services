@@ -9,6 +9,9 @@ const UserOrders = ({ currentUser, orders }) => {
   const renderOrder = order => {
     return (
       <div className="row" key={order.id}>
+        <div className="col-sm">
+          {order.ticket.serial}
+        </div>
         <div className="col-sm title">
           {order.ticket.title}
         </div>
@@ -24,6 +27,9 @@ const UserOrders = ({ currentUser, orders }) => {
 
   const orderHeaders = (
     <div className="row font-weight-bold" >
+      <div className="col-sm">
+        Ticket Number
+        </div>
       <div className="col-sm title">
         Event Title
         </div>

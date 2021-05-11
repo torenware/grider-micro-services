@@ -10,6 +10,9 @@ const UserTickets = ({ currentUser, tickets }) => {
     return (
       <div className="row" key={ticket.id}>
         <div className="col-sm title">
+          {ticket.serial}
+        </div>
+        <div className="col-sm title">
           {ticket.title}
         </div>
         <div className="col-sm">
@@ -24,6 +27,9 @@ const UserTickets = ({ currentUser, tickets }) => {
 
   const ticketHeaders = (
     <div className="row font-weight-bold" >
+      <div className="col-sm">
+        Ticket Number
+      </div>
       <div className="col-sm title">
         Event Title
         </div>

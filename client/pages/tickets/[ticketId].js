@@ -24,6 +24,7 @@ const TicketInfo = ({ ticket, addFlash, currentUser }) => {
     <div className="ticket-show">
       <h1>Ticket Details</h1>
       <ul>
+        <li><label>Number</label>{ticket.serial}</li>
         <li><label>Title</label>{ticket.title}</li>
         <li><label>Price</label>${ticket.price.toFixed(2)}</li>
       </ul>
