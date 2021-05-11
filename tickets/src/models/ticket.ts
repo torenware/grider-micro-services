@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
-import {TicketStatus} from '@grider-courses/common';
+import { TicketStatus } from '@grider-courses/common';
+import { Serial } from './serial';
 
 // Define a "new user" TS interface to limit the
 // attributes of a new user.
@@ -10,6 +11,7 @@ interface TicketAttrs {
   userId: string;
   orderId?: string;
   status?: TicketStatus;
+  serial?: number;
 }
 
 // Add an interface to bless our extended User model.
@@ -25,6 +27,7 @@ interface TicketDoc extends mongoose.Document {
   version: number;
   orderId?: string;
   status?: TicketStatus;
+  serial?: number;
   isLocked(): Promise<boolean>;
 }
 
@@ -52,6 +55,11 @@ const ticketSchema = new mongoose.Schema(
       required: false,
       default: null,
     },
+    serial: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   {
     // We want to normalize mongodb's output by removing
@@ -74,6 +82,19 @@ const ticketSchema = new mongoose.Schema(
 // @see https://www.npmjs.com/package/mongoose-update-if-current
 ticketSchema.set('versionKey', 'version');
 ticketSchema.plugin(updateIfCurrentPlugin);
+
+// Test pre hook
+ticketSchema.pre('save', async function (next) {
+  const record = this as TicketDoc;
+  if (this.isNew) {
+    const counter = await Serial.singleton({
+      name: 'tickets',
+      counter: 1000,
+    });
+    record.serial = await counter.serial('tickets');
+  }
+  next();
+});
 
 // Bundle a build func into the schema object.
 // This imposes TS type checking on build.

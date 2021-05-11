@@ -14,7 +14,6 @@ it('implements OCC (optimistic concurrency control)', async () => {
   const fetch1 = await Ticket.findById(id);
   const fetch2 = await Ticket.findById(id);
 
-  console.log(fetch1);
   expect(fetch1!.version).toEqual(fetch2!.version);
 
   // Change each fetched ticket.
@@ -53,4 +52,24 @@ it('increments the version number on save.', async () => {
   ticket.set({ price: 30 });
   await ticket.save();
   expect(ticket.version).toEqual(2);
+});
+
+it('has a serial field', async () => {
+  const ticket = Ticket.build({
+    title: 'Mickey has serial',
+    price: 80,
+    userId: 'somebody',
+  });
+  await ticket.save();
+  expect(ticket.serial).toBeGreaterThan(100);
+
+  // See if we actually increment
+  const oldValue = ticket.serial;
+  const newTicket = Ticket.build({
+    title: 'Mickey has another serial',
+    price: 81,
+    userId: 'somebody',
+  });
+  await newTicket.save();
+  expect(newTicket.serial! - oldValue!).toEqual(1);
 });

@@ -4,6 +4,7 @@ import { natsWrapper } from './nats-wrapper';
 import { OrderCreatedListener } from './listeners/order-created-listener';
 import { OrderCancelledListener } from './listeners/order-cancelled-listener';
 import { PaymentCreatedListener } from './listeners/payment-created-listener';
+import { buildConnection } from './models/connection';
 
 // Set up our start up of mongo via mongoose
 const start = async () => {
@@ -22,11 +23,12 @@ const start = async () => {
     throw new Error('NATS_URL env must be defined');
   }
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-    });
+    // await mongoose.connect(process.env.MONGO_URI, {
+    //   useNewUrlParser: true,
+    //   useUnifiedTopology: true,
+    //   useCreateIndex: true,
+    // });
+    await buildConnection();
     console.log('Mongo started');
 
     await natsWrapper.connect(
