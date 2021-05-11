@@ -23,7 +23,6 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
         status: TicketStatus.Reserved,
       });
       await ticket.save();
-      // Ticket has changed; emit an event.
       const eventData = {
         id: ticket.id,
         serial: ticket.serial,
