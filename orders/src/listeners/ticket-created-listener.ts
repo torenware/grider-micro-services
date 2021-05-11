@@ -10,9 +10,11 @@ export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
   async onMessage(data: TicketCreatedEvent['data'], msg: Message) {
     // console.log(`Handling ${this.subject} with msg`, data);
 
-    const { id, title, price } = data;
+    const { id, serial, title, price } = data;
+    console.log('serial', serial);
     const ticket = Ticket.build({
       id,
+      serial,
       title,
       price,
     });

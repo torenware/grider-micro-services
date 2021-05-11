@@ -29,6 +29,7 @@ it('will return 404 if the record does not belong to the user', async () => {
   const id = new mongoose.Types.ObjectId().toHexString();
   const ticket = Ticket.build({
     id,
+    serial: 1000,
     title: 'Not ours',
     price: 11,
   });
@@ -55,6 +56,7 @@ it('will delete a record if the user owns it and return 200', async () => {
     id,
     title: 'Ours this time',
     price: 11,
+    serial: 1000,
   });
   await ticket.save();
   const order = await request(app)
@@ -90,6 +92,7 @@ it('emits an event on deleting a ticket', async () => {
     id,
     title: 'Whattashow',
     price: 10,
+    serial: 1000,
   });
   ticket.save();
 

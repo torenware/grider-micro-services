@@ -13,6 +13,7 @@ const setUp = async () => {
   const id = new mongoose.Types.ObjectId().toHexString();
   const event = {
     id,
+    serial: 1000,
     userId: 'i-got-nobody',
     title: 'The Aristocrats',
     price: 33,
@@ -40,6 +41,7 @@ it('creates a ticket record upon processing a ticket created event', async () =>
   expect(ticket).not.toBeNull();
   expect(ticket!.title).toEqual(event.title);
   expect(ticket!.price).toEqual(event.price);
+  expect(ticket!.serial).toBeGreaterThan(100);
   // console.log(ticket);
 });
 

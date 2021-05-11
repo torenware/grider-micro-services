@@ -47,6 +47,7 @@ it('if logged in, but the ticket exists but is not our user return 404', async (
 
   const ticket = Ticket.build({
     id: ticketId,
+    serial: 1000,
     title: 'Already Gone',
     price: 13,
   });
@@ -75,6 +76,7 @@ it('if the order exists, return it with a 200', async () => {
   const ticketId = new mongoose.Types.ObjectId().toHexString();
   const ticket = Ticket.build({
     id: ticketId,
+    serial: 1000,
     title: 'Our Show',
     price: 13,
   });

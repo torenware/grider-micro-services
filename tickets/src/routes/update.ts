@@ -55,6 +55,7 @@ router.put(
       title: ticket.title,
       userId: ticket.userId,
       status: ticket.status,
+      serial: ticket.serial,
     });
 
     res.send(record);

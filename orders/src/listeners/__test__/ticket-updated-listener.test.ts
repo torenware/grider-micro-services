@@ -14,6 +14,7 @@ const setUp = async () => {
   const id = new mongoose.Types.ObjectId().toHexString();
   const event: TicketUpdatedEvent['data'] = {
     id,
+    serial: 1000,
     userId: 'i-got-nobody',
     title: 'The Aristocrats',
     price: 33,

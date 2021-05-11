@@ -7,6 +7,7 @@ import { Order } from './orders';
 
 interface TicketAttrs {
   id: string;
+  serial: number;
   title: string;
   price: number;
 }
@@ -26,6 +27,7 @@ interface TicketModel extends mongoose.Model<TicketDoc> {
 // Interface to describe a Ticket document.
 export interface TicketDoc extends mongoose.Document {
   id: string;
+  serial: number;
   version: number;
   title: string;
   price: number;
@@ -42,6 +44,11 @@ const ticketSchema = new mongoose.Schema(
       type: Number,
       required: true,
       min: 0,
+    },
+    serial: {
+      type: Number,
+      required: true,
+      min: 100,
     },
   },
   {
@@ -73,6 +80,7 @@ ticketSchema.statics.build = (attrs: TicketAttrs) => {
     _id: attrs.id,
     title: attrs.title,
     price: attrs.price,
+    serial: attrs.serial,
   });
 };
 
