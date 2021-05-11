@@ -62,4 +62,14 @@ it('has a serial field', async () => {
   });
   await ticket.save();
   expect(ticket.serial).toBeGreaterThan(100);
+
+  // See if we actually increment
+  const oldValue = ticket.serial;
+  const newTicket = Ticket.build({
+    title: 'Mickey has another serial',
+    price: 81,
+    userId: 'somebody',
+  });
+  await newTicket.save();
+  expect(newTicket.serial! - oldValue!).toEqual(1);
 });
