@@ -1,6 +1,25 @@
 import Link from 'next/link';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import clientBuilder from '../api/build-client';
 
-const LandingPage = ({ currentUser, tickets }) => {
+const LandingPage = (props) => {
+  const [tickets, setTickets] = useState(props.tickets);
+  useEffect(async () => {
+    const client = axios.create({
+      baseURL: '/',
+    });
+    const timer = setInterval(async () => {
+      const fetched = await getInitialProps(null, client, props.currentUser);
+      setTickets(fetched.tickets);
+      console.log('page updated');
+    }, 20 * 1000);
+    // remove timer on page teardown.
+    return () => {
+      setTickets([]);
+      clearInterval(timer);
+    };
+  }, [tickets]);
   const rows = tickets.map(ticket => {
     const detailUri = `/tickets/${ticket.id}`;
     const link = (<Link href={detailUri}><a>{ticket.title}</a></Link>);
@@ -27,9 +46,12 @@ const LandingPage = ({ currentUser, tickets }) => {
 //The static method getInitialProps(), if present, gets called before 
 // rendering, the results getting passed down to components as they render
 // as props.
-LandingPage.getInitialProps = async (context, client, currentUser) => {
+
+const getInitialProps = async (context, client, currentUser) => {
   const { data } = await client.get('/api/tickets');
   return { tickets: data };
 }
+
+LandingPage.getInitialProps = getInitialProps;
 
 export default LandingPage;

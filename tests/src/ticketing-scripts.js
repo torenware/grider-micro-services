@@ -92,6 +92,8 @@ export const createTicket = async (title, price) => {
   catch (err) {
     console.error('threw in createTicket');
     console.error(err.toString());
+    console.error(err);
+    console.error(err.response.data);
   }
   return {};
 };

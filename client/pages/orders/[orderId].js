@@ -125,7 +125,6 @@ PurchaseTicket.getInitialProps = async (context, client, currentUser) => {
   const { orderId } = context.query;
 
   const { data: order } = await client.get(`/api/orders/${orderId}`);
-  console.log('get did not throw');
   if (!order || !order.id) {
     throw new Error('Order not found');
   }
