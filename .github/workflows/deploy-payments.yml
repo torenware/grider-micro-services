@@ -13,8 +13,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - run: cd payments && docker build -t torenware/ticketer-payments .
-      env:
-        NEXT_PUBLIC_STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
     - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
