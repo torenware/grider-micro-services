@@ -18,6 +18,9 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     - run: docker push torenware/ticketer-tickets
+    - uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{secrets.DIGITALOCEAN_ACCESS_TOKEN}}
+    - run: doctl kubernetes cluster kubeconfig save k8s-tware-sfo3-test-1
+    - run: kubectl rollout restart tickets-depl
     
-    
-  
