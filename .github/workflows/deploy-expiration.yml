@@ -22,5 +22,5 @@ jobs:
       with:
         token: ${{secrets.DIGITALOCEAN_ACCESS_TOKEN}}
     - run: doctl kubernetes cluster kubeconfig save k8s-tware-sfo3-test-1
-    - run: kubectl rollout restart expiration-depl
+    - run: kubectl rollout restart deploy expiration-depl
     
