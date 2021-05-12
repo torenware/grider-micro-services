@@ -2,6 +2,8 @@ import axios from 'axios';
 import https from 'https';
 import fs, { promises } from 'fs';
 
+const domain = 'ticketing.torensys.com';
+
 const options = {
   httpsAgent: new https.Agent({
     rejectUnauthorized: false
@@ -43,7 +45,7 @@ const loadCookie = () => {
 
 
 export const currentUser = async () => {
-  const url = 'https://ticketing.local/api/users/currentuser';
+  const url = `https://${domain}/api/users/currentuser`;
   try {
     const response = await axios.get(url, loadOptions());
     console.log('currentuser:', response.data);
@@ -60,7 +62,7 @@ export const createTicket = async (title, price) => {
     title,
     price: parseFloat(price)
   }
-  const url = 'https://ticketing.local/api/tickets';
+  const url = `https://${domain}/api/tickets`;
   try {
     const response = await axios.post(url, data, loadOptions());
     // axios does not implement await correctly; you *always*
@@ -78,7 +80,7 @@ export const createOrder = async (ticketId) => {
   const data = {
     ticketId
   };
-  const url = 'https://ticketing.local/api/orders';
+  const url = `https://${domain}/api/orders`;
   try {
     const response = await axios.post(url, data, loadOptions());
     // axios does not implement await correctly; you *always*
@@ -93,7 +95,7 @@ export const createOrder = async (ticketId) => {
 };
 
 export const createPayment = async (orderId, token, ticketId) => {
-  const url = 'https://ticketing.local/api/payments';
+  const url = `https://${domain}/api/payments`;
   let response;
   try {
     response = await axios.post(url, { orderId, token, ticketId }, loadOptions());
@@ -113,7 +115,7 @@ export const createPayment = async (orderId, token, ticketId) => {
 
 // https://gist.github.com/nzvtrk/ebf494441e36200312faf82ce89de9f2
 export const signup = async (email, password) => {
-  const url = 'https://ticketing.local/api/users/signup';
+  const url = `https://${domain}/api/users/signup`;
 
   try {
     const response = await axios.post(url, {
@@ -130,7 +132,7 @@ export const signup = async (email, password) => {
 };
 
 export const signin = async (email, password) => {
-  const url = 'https://ticketing.local/api/users/signin';
+  const url = `https://${domain}/api/users/signin`;
 
   try {
     const response = await axios.post(url, {
