@@ -10,6 +10,7 @@ import ErrorPage from './404';
 
 const AppComponent = ({ Component, pageProps, currentUser }) => {
   if (pageProps.statusCode) {
+    console.log('error via _app');
     return <ErrorPage />;
   }
 
