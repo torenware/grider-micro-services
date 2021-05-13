@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
-import clientBuilder from '../api/build-client';
 
 const LandingPage = (props) => {
   const [tickets, setTickets] = useState(props.tickets);
@@ -17,9 +16,9 @@ const LandingPage = (props) => {
         setTickets(fetched.tickets);
       }
     }, 20 * 1000);
+
     // remove timer on page teardown.
     return () => {
-      // setTickets([]);
       componentIsMounted.current = false;
       clearInterval(timer);
     };
