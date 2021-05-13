@@ -5,24 +5,25 @@ import { useState, useEffect, useRef } from 'react';
 const LandingPage = (props) => {
   const [tickets, setTickets] = useState(props.tickets);
   // @see https://daviseford.com/blog/2019/07/11/react-hooks-check-if-mounted.html
-  const componentIsMounted = useRef(true);
-  useEffect(async () => {
-    const client = axios.create({
-      baseURL: '/',
-    });
-    const timer = setInterval(async () => {
-      const fetched = await getInitialProps(null, client, props.currentUser);
-      if (componentIsMounted.current) {
-        setTickets(fetched.tickets);
-      }
-    }, 20 * 1000);
+  // const componentIsMounted = useRef(true);
+  // useEffect(async () => {
+  //   const client = axios.create({
+  //     baseURL: '/',
+  //   });
+  //   const timer = setInterval(async () => {
+  //     const fetched = await getInitialProps(null, client, props.currentUser);
+  //     if (componentIsMounted.current) {
+  //       setTickets([]);
+  //       setTickets(fetched.tickets);
+  //     }
+  //   }, 20 * 1000);
 
-    // remove timer on page teardown.
-    return () => {
-      componentIsMounted.current = false;
-      clearInterval(timer);
-    };
-  }, [tickets]);
+  //   // remove timer on page teardown.
+  //   return () => {
+  //     componentIsMounted.current = false;
+  //     clearInterval(timer);
+  //   };
+  // }, [tickets]);
   const rows = tickets.map(ticket => {
     const detailUri = `/tickets/${ticket.id}`;
     const link = (<Link href={detailUri}><a>{ticket.title}</a></Link>);
