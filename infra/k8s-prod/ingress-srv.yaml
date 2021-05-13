@@ -15,7 +15,7 @@ spec:
   tls:
     - hosts:
       - ticketing.torensys.com
-      secretName: local-tls-secret
+      secretName: ingress-tls-secret
   rules:
     - host: ticketing.torensys.com
       http:
