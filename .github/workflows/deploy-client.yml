@@ -12,9 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: cd client && docker build --build-arg NEXT_PUBLIC_STRIPE_PUBLIC_KEY -t torenware/ticketer-client .
+    - run: cd client && \
+           docker build \
+           --build-arg NEXT_PUBLIC_STRIPE_PUBLIC_KEY \
+           --build-arg NEXT_PUBLIC_BASE_URI \
+           --file Dockerfile-production \
+           -t torenware/ticketer-client .
       env:
         NEXT_PUBLIC_STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+        NEXT_PUBLIC_BASE_URI: ${{ secrets.BASE_URI }}
     - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
