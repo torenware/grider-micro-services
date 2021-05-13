@@ -1,22 +1,26 @@
 import Link from 'next/link';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import clientBuilder from '../api/build-client';
 
 const LandingPage = (props) => {
   const [tickets, setTickets] = useState(props.tickets);
+  // @see https://daviseford.com/blog/2019/07/11/react-hooks-check-if-mounted.html
+  const componentIsMounted = useRef(true);
   useEffect(async () => {
     const client = axios.create({
       baseURL: '/',
     });
     const timer = setInterval(async () => {
       const fetched = await getInitialProps(null, client, props.currentUser);
-      setTickets(fetched.tickets);
-      console.log('page updated');
+      if (componentIsMounted.current) {
+        setTickets(fetched.tickets);
+      }
     }, 20 * 1000);
     // remove timer on page teardown.
     return () => {
-      setTickets([]);
+      // setTickets([]);
+      componentIsMounted.current = false;
       clearInterval(timer);
     };
   }, [tickets]);
