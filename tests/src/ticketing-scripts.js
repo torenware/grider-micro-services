@@ -1,8 +1,28 @@
 import axios from 'axios';
 import https from 'https';
 import fs, { promises } from 'fs';
+import util from 'util';
+import { exec as oldExec } from 'child_process';
+const exec = util.promisify(oldExec);
 
-const domain = 'ticketing.torensys.com';
+const getDomain = async () => {
+  const { stdout, stderr } = await exec('kubectl config current-context');
+  if (stderr) {
+    return null;
+  }
+  const context = stdout.trim();
+  switch (context) {
+    case 'docker-desktop':
+      return 'ticketing.local';
+    case 'digital-ocean':
+      return 'ticketing.torensys.com';
+    default:
+      return null;
+  }
+    
+};
+
+const domain = await getDomain();
 
 const options = {
   httpsAgent: new https.Agent({
