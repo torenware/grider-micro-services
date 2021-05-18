@@ -8,7 +8,9 @@ import { useState, useEffect } from 'react';
 import ErrorPage from './404';
 
 
-const AppComponent = ({ Component, pageProps, currentUser }) => {
+const AppComponent = (props) => {
+  const { Component, pageProps, currentUser } = props;
+
   if (pageProps.statusCode) {
     console.log('error via _app');
     return <ErrorPage />;
@@ -52,6 +54,8 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
 };
 
 AppComponent.getInitialProps = async appContext => {
+  console.log('Context', Object.keys(appContext));
+
   const client = await buildClient(appContext.ctx);
   let data;
   try {

@@ -1,62 +1,59 @@
-apiVersion: skaffold/v2alpha3
+apiVersion: skaffold/v2beta16
 kind: Config
+build:
+  artifacts:
+  - image: torenware/ticketer-auth
+    context: auth
+    sync:
+      manual:
+      - src: src/***/*.ts
+        dest: .
+    docker:
+      dockerfile: Dockerfile
+  - image: torenware/ticketer-tickets
+    context: tickets
+    sync:
+      manual:
+      - src: src/***/*.ts
+        dest: .
+    docker:
+      dockerfile: Dockerfile
+  - image: torenware/ticketer-orders
+    context: orders
+    sync:
+      manual:
+      - src: src/***/*.ts
+        dest: .
+    docker:
+      dockerfile: Dockerfile
+  - image: torenware/ticketer-payments
+    context: payments
+    sync:
+      manual:
+      - src: src/***/*.ts
+        dest: .
+    docker:
+      dockerfile: Dockerfile
+  - image: torenware/ticketer-expiration
+    context: expiration
+    sync:
+      manual:
+      - src: src/***/*.ts
+        dest: .
+    docker:
+      dockerfile: Dockerfile
+  - image: torenware/ticketer-client
+    context: client
+    sync:
+      manual:
+      - src: '***/*.ts'
+        dest: .
+    docker:
+      dockerfile: Dockerfile
+  local:
+    push: false
 deploy:
   kubectl:
     manifests:
-      - ./infra/k8s/*
-      - ./infra/k8s-dev/*
-build:
-  #  local:{}
-  #  push: false
-  local:
-    push: false
-    
-  artifacts:
-    - image: torenware/ticketer-auth
-      context: auth
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: 'src/***/*.ts'
-            dest: .
-    - image: torenware/ticketer-tickets
-      context: tickets
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: 'src/***/*.ts'
-            dest: .
-    - image: torenware/ticketer-orders
-      context: orders
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: 'src/***/*.ts'
-            dest: .
-    - image: torenware/ticketer-payments
-      context: payments
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: 'src/***/*.ts'
-            dest: .
-    - image: torenware/ticketer-expiration
-      context: expiration
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: 'src/***/*.ts'
-            dest: .
-    - image: torenware/ticketer-client
-      context: client
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: '***/*.ts'
-            dest: .
+    - ./infra/k8s/*
+    - ./infra/k8s-dev/*
