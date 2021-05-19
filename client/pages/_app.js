@@ -54,7 +54,6 @@ const AppComponent = (props) => {
 };
 
 AppComponent.getInitialProps = async appContext => {
-  console.log('Context', Object.keys(appContext));
 
   const client = await buildClient(appContext.ctx);
   let data;
@@ -68,7 +67,9 @@ AppComponent.getInitialProps = async appContext => {
     if (inServer) {
       console.error('in server');
     }
-    throw err;
+    if (typeof window !== 'undefined') {
+      throw err;
+    }
   }
 
 

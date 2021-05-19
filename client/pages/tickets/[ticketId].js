@@ -10,7 +10,6 @@ const TicketInfo = ({ ticket, addFlash, currentUser }) => {
       ticketId,
     },
     onSuccess: (order) => {
-      console.log('order:', order);
       addFlash('New order created');
       Router.push(`/orders/${order.id}`);
     }

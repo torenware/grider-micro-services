@@ -1,7 +1,5 @@
-import Header from '../components/header';
 
 export default function Custom404() {
-
   return (
     <div className='error'>
       <div className='container'>
