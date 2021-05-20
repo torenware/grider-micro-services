@@ -1,0 +1,9 @@
+This is a regular line
+This is another line
+
+This is a line with a {{.VAR}} template string
+Another line
+A template string with spaces: "{{ .FOO }}"
+
+End
+
