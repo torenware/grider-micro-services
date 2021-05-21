@@ -52,7 +52,8 @@ build:
       dockerfile: Dockerfile-production
       buildArgs:
         NEXT_PUBLIC_STRIPE_PUBLIC_KEY: "{{ .NEXT_PUBLIC_STRIPE_PUBLIC_KEY }}"
-        NEXT_PUBLIC_BASE_URI: "{{ .NEXT_PUBLIC_BASE_URI }}"
+        #NEXT_PUBLIC_BASE_URI: "{{ .NEXT_PUBLIC_BASE_URI }}"
+        NEXT_PUBLIC_BASE_URI: "ingress-nginx-controller.ingress-nginx"
   local:
     push: false
 deploy:
