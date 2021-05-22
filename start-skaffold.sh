@@ -1,18 +1,20 @@
 #! /usr/local/bin/bash
 
-if minikube -p grider status > /dev/null; then
-		echo "Minikube is running as grider"
-else
-		# 
-		echo "Start up minikube"
-		minikube -p grider start
-fi
+while read line;
+do
+    echo $line
+     f1=$(echo $line | cut -f 1 -d =)
+     f2=$(echo $line | cut -f 2 -d =)
 
-# Set up docker env
-source <(minikube -p grider docker-env)
-echo "Starting skaffold using minikube's docker environment"
-# Make the ingress related bug go away:
-kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+     if [ -z "$f2" ]; then
+         continue
+     fi
+
+     [[ $f1 =~ ^# ]] && continue
+     val=$(echo $f2 | tr -d \'\")
+     export $f1=$val
+
+done < .env
 
 skaffold dev
 
