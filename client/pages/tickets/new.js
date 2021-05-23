@@ -17,7 +17,7 @@ const NewTicket = ({ currentUser, addFlash }) => {
       price
     },
     onSuccess: () => {
-      addFlash('New ticket created');
+      addFlash(`Sold ticket for "${title}"`);
       Router.push('/');
     }
   });
@@ -32,7 +32,6 @@ const NewTicket = ({ currentUser, addFlash }) => {
   }
 
   const onSubmit = async event => {
-    console.log('submit called');
     event.preventDefault();
     doRequest();
   };

@@ -1,6 +1,6 @@
 // This file is "magic" for next
 import Head from 'next/head'
-import { CookiesProvider, useCookies } from 'react-cookie';
+import { CookiesProvider, useCookies, Cookies } from 'react-cookie';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../components/local.css';
 import buildClient from '../api/build-client';
@@ -10,7 +10,7 @@ import ErrorPage from './404';
 
 const AppComponent = (props) => {
   const { Component, pageProps, currentUser } = props;
-  const [cookies, setCookie] = useCookies("flash");
+  const [cookies, setCookie] = useCookies(['flash']);
 
   if (pageProps.statusCode) {
     console.log('error via _app');
@@ -28,7 +28,7 @@ const AppComponent = (props) => {
   }, [pageProps.flashItems]);
 
   const addFlash = (message) => {
-    setCookie(message);
+    setCookie('flash', message);
   };
 
   const disappearingAlert = (msg) => {
@@ -56,12 +56,13 @@ const AppComponent = (props) => {
 };
 
 AppComponent.getInitialProps = async appContext => {
-
   const client = await buildClient(appContext.ctx);
   let data;
   try {
-    const resp = await client.get('/api/users/currentuser');
-    data = resp.data;
+    if (client) {
+      const resp = await client.get('/api/users/currentuser');
+      data = resp.data;
+    }
   }
   catch (err) {
     console.error('dying inside getInitialProps');
@@ -88,10 +89,14 @@ AppComponent.getInitialProps = async appContext => {
 
   // Handle flash data.
   if (typeof window !== 'undefined') {
-    const flash = cookies;
+    // We need to use the OO interface for 
+    // react-cookie, since we cannot see
+    // into the main function.
+    const cookies = new Cookies();
+    const flash = cookies.get('flash');
     if (flash) {
       pageProps.flashItems = flash;
-      setCookies(null);
+      cookies.remove('flash');
     }
   }
 
