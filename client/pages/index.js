@@ -1,9 +1,12 @@
 import Link from 'next/link';
 import axios from 'axios';
-import { useState, useEffect, useLayoutEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import lodash from 'lodash';
 
 const LandingPage = (props) => {
   const [tickets, setTickets] = useState(props.tickets);
+  const mounted = useRef(true);
+  const lastChange = useRef({});
   // @see https://daviseford.com/blog/2019/07/11/react-hooks-check-if-mounted.html
   // const componentIsMounted = useRef(true);
   // useEffect(async () => {
@@ -32,38 +35,57 @@ const LandingPage = (props) => {
       cancelToken: source.token,
 
     });
-    let mounted = true;
     let lastList = {}
     const retouchDOM = async () => {
       const fetched = await getInitialProps(null, client, props.currentUser);
+      const lastCycle = lastChange.current;
+      const thisCycle = {};
+      fetched.tickets.map((tkt) => {
+        thisCycle[tkt.id] = tkt.status;
+      });
+      // No change, no reason to touch DOM.
+      if (lodash.isEqual(thisCycle, lastCycle)) {
+        console.log('no change');
+        return;
+      }
+      else {
+        console.log('last', lastCycle);
+        console.log('this', thisCycle);
+      }
+      let changed = false;
       await fetched.tickets.map(async tkt => {
         const selector = `div[id='${tkt.id}'] span.status`;
-        // console.log('selector', selector);
-        if (mounted) {
+        console.log('selector', selector);
+        if (mounted.current) {
           const dom = document.querySelector(selector);
           if (dom) {
             dom.innerHTML = tkt.status;
+            changed = true;
           }
           else {
             console.log('dom prob');
           }
         }
-      })
+      });
+      if (changed) {
+        lastChange.current = thisCycle;
+      }
     };
     const timer = setInterval(async () => {
-      if (mounted) {
+      if (mounted.current) {
         await retouchDOM();
       }
     }, 20 * 1000);
 
+    await retouchDOM();
+
     // remove timer on page teardown.
     return () => {
-      mounted = false;
+      mounted.current = false;
       clearInterval(timer);
       source.cancel('Unmounted');
       console.log('Unmounted from page');
     };
-    await retouchDOM();
 
   }, [tickets]);
   const rows = tickets.map(ticket => {
