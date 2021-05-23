@@ -1,5 +1,6 @@
 // This file is "magic" for next
 import Head from 'next/head'
+import { CookiesProvider, useCookies } from 'react-cookie';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../components/local.css';
 import buildClient from '../api/build-client';
@@ -7,9 +8,9 @@ import Header from '../components/header';
 import { useState, useEffect } from 'react';
 import ErrorPage from './404';
 
-
 const AppComponent = (props) => {
   const { Component, pageProps, currentUser } = props;
+  const [cookies, setCookie] = useCookies("flash");
 
   if (pageProps.statusCode) {
     console.log('error via _app');
@@ -26,9 +27,8 @@ const AppComponent = (props) => {
     }
   }, [pageProps.flashItems]);
 
-
   const addFlash = (message) => {
-    localStorage.setItem('flashItems', message);
+    setCookie(message);
   };
 
   const disappearingAlert = (msg) => {
@@ -40,16 +40,18 @@ const AppComponent = (props) => {
   };
 
   return (
-    <div>
-      <Head>
-        <title>Fake Tickets!</title>
-      </Head>
-      <Header currentUser={currentUser} />
-      <div className='container'>
-        {showFlash && disappearingAlert(pageProps.flashItems)}
-        <Component addFlash={addFlash} currentUser={currentUser} {...pageProps} />
+    <CookiesProvider>
+      <div>
+        <Head>
+          <title>Fake Tickets!</title>
+        </Head>
+        <Header currentUser={currentUser} />
+        <div className='container'>
+          {showFlash && disappearingAlert(pageProps.flashItems)}
+          <Component addFlash={addFlash} currentUser={currentUser} {...pageProps} />
+        </div>
       </div>
-    </div>
+    </CookiesProvider>
   );
 };
 
@@ -72,9 +74,7 @@ AppComponent.getInitialProps = async appContext => {
     }
   }
 
-
   let pageProps = {};
-
   if (appContext.Component.getInitialProps) {
     // To save doing this in the wrapped Component, pass client
     // and currentUser to its pageProps.
@@ -86,14 +86,12 @@ AppComponent.getInitialProps = async appContext => {
     }
   }
 
-
   // Handle flash data.
   if (typeof window !== 'undefined') {
-    // console.log('state:', flashMessages);
-    const flash = localStorage.getItem('flashItems');
+    const flash = cookies;
     if (flash) {
       pageProps.flashItems = flash;
-      localStorage.removeItem('flashItems');
+      setCookies(null);
     }
   }
 
