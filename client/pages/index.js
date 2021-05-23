@@ -1,85 +1,80 @@
 import Link from 'next/link';
 import axios from 'axios';
-import { useState, useEffect, useRef } from 'react';
-import lodash from 'lodash';
+import { useState, useEffect, useLayoutEffect } from 'react';
 
 const LandingPage = (props) => {
   const [tickets, setTickets] = useState(props.tickets);
-
-  const setTicketsSmart = newTickets => {
-    const compObj = lodash.isEqual;
-    const oldTickets = tickets;
-    const nextTickets = [];
-    const oldTktMap = oldTickets.reduce((map, tkt) => {
-      map[tkt.id] = tkt;
-      return map;
-    }, {});
-    const changed = {};
-    for (tkt of newTickets) {
-      const id = tkt.id;
-      const oldTkt = oldTktMap.get(id);
-      if (oldTkt) {
-        delete oldTktMap[id];
-        if (!compObj(oldTkt, tkt)) {
-          changed.push(id);
-          nextTickets.push(tkt);
-        }
-        else {
-          nextTickets.push(oldTkt)
-        }
-      }
-      else {
-        nextTickets.push(tkt)
-        changed.push(id);
-      }
-    }
-    if (changed.length) {
-      setTickets(nextTickets);
-    }
-  }
-
   // @see https://daviseford.com/blog/2019/07/11/react-hooks-check-if-mounted.html
-  const componentIsMounted = useRef(true);
+  // const componentIsMounted = useRef(true);
+  // useEffect(async () => {
+  //   const client = axios.create({
+  //     baseURL: '/',
+  //   });
+  //   const timer = setInterval(async () => {
+  //     const fetched = await getInitialProps(null, client, props.currentUser);
+  //     if (componentIsMounted.current) {
+  //       setTickets([]);
+  //       setTickets(fetched.tickets);
+  //     }
+  //   }, 20 * 1000);
+
+  //   // remove timer on page teardown.
+  //   return () => {
+  //     componentIsMounted.current = false;
+  //     clearInterval(timer);
+  //   };
+  // }, [tickets]);
+
   useEffect(async () => {
     const source = axios.CancelToken.source();
     const client = axios.create({
       baseURL: '/',
       cancelToken: source.token,
-    });
-    const timer = setInterval(async () => {
-      let fetched;
-      try {
-        fetched = await getInitialProps(null, client, props.currentUser);
-      }
-      catch (error) {
-        if (Axios.isCancel(error)) {
-        } else {
-          throw error
-        }
-      }
 
-      if (componentIsMounted.current) {
-        setTickets([]);
-        setTickets(fetched.tickets);
+    });
+    let mounted = true;
+    let lastList = {}
+    const retouchDOM = async () => {
+      const fetched = await getInitialProps(null, client, props.currentUser);
+      await fetched.tickets.map(async tkt => {
+        const selector = `div[id='${tkt.id}'] span.status`;
+        // console.log('selector', selector);
+        if (mounted) {
+          const dom = document.querySelector(selector);
+          if (dom) {
+            dom.innerHTML = tkt.status;
+          }
+          else {
+            console.log('dom prob');
+          }
+        }
+      })
+    };
+    const timer = setInterval(async () => {
+      if (mounted) {
+        await retouchDOM();
       }
     }, 20 * 1000);
+
     // remove timer on page teardown.
     return () => {
-      componentIsMounted.current = false;
-      source.cancel();
+      mounted = false;
       clearInterval(timer);
-
+      source.cancel('Unmounted');
+      console.log('Unmounted from page');
     };
+    await retouchDOM();
+
   }, [tickets]);
   const rows = tickets.map(ticket => {
     const detailUri = `/tickets/${ticket.id}`;
     const link = (<Link href={detailUri}><a>{ticket.title}</a></Link>);
     return (
-      <div className='row' key={ticket.id}>
+      <div className='row' id={ticket.id} key={ticket.id}>
         <div className="col-sm"><label>Number:</label>{ticket.serial}</div>
         <div className="col-sm"><label>Title:</label>{link}</div>
         <div className="col-sm"><label>Price:</label>${ticket.price.toFixed(2)}</div>
-        <div className="col-sm"><label>Available?</label>{ticket.status}</div>
+        <div className="col-sm"><label>Available?</label><span className='status'>{ticket.status}</span></div>
       </div>
     );
   });
