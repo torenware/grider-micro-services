@@ -4,6 +4,54 @@ import { useState, useEffect, useRef } from 'react';
 
 const LandingPage = (props) => {
   const [tickets, setTickets] = useState(props.tickets);
+
+  const setTicketsSmart = newTickets => {
+    const compObj = (obj1, obj2) => {
+      if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+        return false;
+      }
+      const obj1Set = new Set(Object.keys(obj1));
+      const diff = [...Object.keys(obj2).filter(key => !obj1Set.has(key))]
+      if (diff.length) {
+        return false;
+      }
+      for (let key of obj1Set) {
+        if (obj1[key] !== obj2[key]) {
+          return false;
+        }
+      }
+      return true;
+    };
+    const oldTickets = tickets;
+    const nextTickets = [];
+    const oldTktMap = oldTickets.reduce((map, tkt) => {
+      map[tkt.id] = tkt;
+      return map;
+    }, {});
+    const changed = {};
+    for (tkt of newTickets) {
+      const id = tkt.id;
+      const oldTkt = oldTktMap.get(id);
+      if (oldTkt) {
+        delete oldTktMap[id];
+        if (!compObj(oldTkt, tkt)) {
+          changed.push(id);
+          nextTickets.push(tkt);
+        }
+        else {
+          nextTickets.push(oldTkt)
+        }
+      }
+      else {
+        nextTickets.push(tkt)
+        changed.push(id);
+      }
+    }
+    if (changed.length) {
+      setTickets(nextTickets);
+    }
+  }
+
   // @see https://daviseford.com/blog/2019/07/11/react-hooks-check-if-mounted.html
   const componentIsMounted = useRef(true);
   useEffect(async () => {
@@ -29,7 +77,6 @@ const LandingPage = (props) => {
         setTickets(fetched.tickets);
       }
     }, 20 * 1000);
-
     // remove timer on page teardown.
     return () => {
       componentIsMounted.current = false;
