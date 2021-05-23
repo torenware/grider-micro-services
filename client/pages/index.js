@@ -1,27 +1,13 @@
 import Link from 'next/link';
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
+import lodash from 'lodash';
 
 const LandingPage = (props) => {
   const [tickets, setTickets] = useState(props.tickets);
 
   const setTicketsSmart = newTickets => {
-    const compObj = (obj1, obj2) => {
-      if (Object.keys(obj1).length !== Object.keys(obj2).length) {
-        return false;
-      }
-      const obj1Set = new Set(Object.keys(obj1));
-      const diff = [...Object.keys(obj2).filter(key => !obj1Set.has(key))]
-      if (diff.length) {
-        return false;
-      }
-      for (let key of obj1Set) {
-        if (obj1[key] !== obj2[key]) {
-          return false;
-        }
-      }
-      return true;
-    };
+    const compObj = lodash.isEqual;
     const oldTickets = tickets;
     const nextTickets = [];
     const oldTktMap = oldTickets.reduce((map, tkt) => {
