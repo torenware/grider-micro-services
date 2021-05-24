@@ -6,7 +6,7 @@ import lodash from 'lodash';
 const LandingPage = (props) => {
   const [tickets, setTickets] = useState(props.tickets);
   const mounted = useRef(true);
-  const lastChange = useRef({});
+  const lastChange = useRef(tickets);
   // @see https://daviseford.com/blog/2019/07/11/react-hooks-check-if-mounted.html
   // const componentIsMounted = useRef(true);
   // useEffect(async () => {
@@ -28,56 +28,43 @@ const LandingPage = (props) => {
   //   };
   // }, [tickets]);
 
-  useEffect(async () => {
+  useEffect(() => {
     const source = axios.CancelToken.source();
     const client = axios.create({
       baseURL: '/',
       cancelToken: source.token,
 
     });
-    let lastList = {}
+    mounted.current = true;
     const retouchDOM = async () => {
       const fetched = await getInitialProps(null, client, props.currentUser);
       const lastCycle = lastChange.current;
-      const thisCycle = {};
-      fetched.tickets.map((tkt) => {
-        thisCycle[tkt.id] = tkt.status;
-      });
+      let thisCycle = fetched.tickets;
       // No change, no reason to touch DOM.
       if (lodash.isEqual(thisCycle, lastCycle)) {
         console.log('no change');
+        console.log('mounted?', mounted.current);
         return;
       }
       else {
+        console.log('mounted?', mounted.current);
         console.log('last', lastCycle);
         console.log('this', thisCycle);
       }
-      let changed = false;
-      await fetched.tickets.map(async tkt => {
-        const selector = `div[id='${tkt.id}'] span.status`;
-        console.log('selector', selector);
+      lastChange.current = fetched.tickets;
+      fetched.tickets.map(tkt => {
         if (mounted.current) {
-          const dom = document.querySelector(selector);
-          if (dom) {
-            dom.innerHTML = tkt.status;
-            changed = true;
-          }
-          else {
-            console.log('dom prob');
-          }
+          setTickets(fetched.tickets);
         }
       });
-      if (changed) {
-        lastChange.current = thisCycle;
-      }
     };
-    const timer = setInterval(async () => {
+    const timer = setInterval(() => {
       if (mounted.current) {
-        await retouchDOM();
+        retouchDOM();
       }
     }, 20 * 1000);
 
-    await retouchDOM();
+    retouchDOM();
 
     // remove timer on page teardown.
     return () => {
@@ -87,7 +74,7 @@ const LandingPage = (props) => {
       console.log('Unmounted from page');
     };
 
-  }, [tickets]);
+  }, [tickets, lastChange]);
   const rows = tickets.map(ticket => {
     const detailUri = `/tickets/${ticket.id}`;
     const link = (<Link href={detailUri}><a>{ticket.title}</a></Link>);
