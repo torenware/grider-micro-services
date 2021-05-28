@@ -7,10 +7,25 @@ import buildClient from '../api/build-client';
 import Header from '../components/header';
 import { useState, useEffect } from 'react';
 import ErrorPage from './404';
+import cookie from 'cookie';
 
 const AppComponent = (props) => {
   const { Component, pageProps, currentUser } = props;
   const [cookies, setCookie] = useCookies(['flash']);
+
+  // Catch random promise rejections.
+  useEffect(() => {
+    const handler = function (promiseRejectionEvent) {
+      this.alert('expose background console');
+      console.log('promise threw', promiseRejectionEvent);
+    };
+    window.addEventListener("unhandledrejection", handler, false);
+
+    return () => {
+      window.removeEventListener("unhandledrejection", handler, false);
+    };
+
+  }, []);
 
   if (pageProps.statusCode) {
     console.log('error via _app');
@@ -28,7 +43,11 @@ const AppComponent = (props) => {
   }, [pageProps.flashItems]);
 
   const addFlash = (message) => {
-    setCookie('flash', message);
+    setCookie('flash', message, { sameSite: true });
+    console.log('raw cookie', document.cookie);
+    // But note that calling serialize directly 
+    // *does* append the option:
+    console.log(cookie.serialize('flash', message, { sameSite: true }));
   };
 
   const disappearingAlert = (msg) => {
@@ -59,7 +78,7 @@ AppComponent.getInitialProps = async appContext => {
   const client = await buildClient(appContext.ctx);
   let data;
   try {
-    if (client) {
+    if (client && process.env.NEXT_PHASE !== 'phase-production-build') {
       const resp = await client.get('/api/users/currentuser');
       data = resp.data;
     }
@@ -92,6 +111,7 @@ AppComponent.getInitialProps = async appContext => {
     // We need to use the OO interface for 
     // react-cookie, since we cannot see
     // into the main function.
+    console.log('raw cookie', document.cookie);
     const cookies = new Cookies();
     const flash = cookies.get('flash');
     if (flash) {

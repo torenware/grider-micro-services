@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { useState } from 'react';
 
-const useRequest = ({ url, method, body, onSuccess = null }) => {
+const useRequest = ({ url, method, body, onSuccess = null, cancelSource = null }) => {
   const [errors, setErrors] = useState(null);
-
   const doRequest = async (bodyParams = {}) => {
     try {
       setErrors(null);
@@ -11,6 +10,9 @@ const useRequest = ({ url, method, body, onSuccess = null }) => {
         ...body,
         ...bodyParams
       };
+      if (cancelSource) {
+        mergedBody.cancelToken = cancelSource.token;
+      }
       const response = await axios[method](url, mergedBody);
       if (onSuccess) {
         await onSuccess(response.data);

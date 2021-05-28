@@ -8,10 +8,10 @@ interface CounterAttr {
 
 // Add an interface to bless our extended User model.
 interface CounterModel extends mongoose.Model<CounterDoc> {
-  singleton(attrs: CounterAttr): CounterDoc;
+  singleton(attrs: CounterAttr): Promise<CounterDoc>;
 }
 
-// Interface to describe a User document.
+// Interface to describe a Counter document.
 interface CounterDoc extends mongoose.Document {
   name: string;
   counter: number;

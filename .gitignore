@@ -1,6 +1,7 @@
 staging
 common
 acme
+build
 node_modules
 *.zip
 *~
@@ -11,5 +12,6 @@ cookies.txt
 .env
 .env.*
 .vscode
-
+# type used by JetBrains:
+*.iml
 

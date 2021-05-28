@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev src/index.ts",
+    "tsc": "tsc",
+    "start": "node build/index.js",
     "test": "jest --watchAll --no-cache --detectOpenHandles",
     "test:ci": "jest"
   },

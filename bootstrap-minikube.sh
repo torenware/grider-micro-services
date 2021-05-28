@@ -1,6 +1,6 @@
 #! /usr/local/bin/bash
 
-minikube -p grider start --driver virtualbox --memory 10G --cpus 4
+minikube -p grider start --driver virtualbox --memory 6G --cpus 4
 echo "------------ MINIKUBE UP -------------"
 minikube -p grider addons enable ingress
 minikube -p grider addons enable metrics-server

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import StripeCheckout from 'react-stripe-checkout';
 import useRequest from '../../hooks/use-request';
 import enforceLogin from '../../utils/redirect-to-login';
@@ -8,43 +9,60 @@ const PurchaseTicket = ({ order, currentUser }) => {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [orderCompleted, setOrderCompleted] = useState(false);
   const [timerId, setTimerId] = useState(false);
+  const mounted = useRef(true);
+  const requestState = useRef(0);
 
   enforceLogin(currentUser);
 
   if (!order) {
     return <ErrorPage />;
-
   }
 
   const orderId = order.id;
+  const cancelSource = axios.CancelToken.source();
 
   // Use useEffect to manage our time left string.
   useEffect(() => {
+    mounted.current = true;
+    // console.log('effect!');
     const calcRemaining = () => {
       const msLeft = new Date(order.expiresAt) - new Date();
-      if (msLeft < 0) {
-        setTimeRemaining(0);
-        setTimerId(false);
-      }
-      else {
-        setTimeRemaining(Math.round(msLeft / 1000));
+      if (mounted.current) {
+        if (msLeft < 0) {
+          setTimeRemaining(0);
+          setTimerId(false);
+        }
+        else {
+          setTimeRemaining(Math.round(msLeft / 1000));
+          // console.log('tick', timeRemaining);
+        }
       }
     };
     calcRemaining(); // start the clock!
     const timer = setInterval(() => {
-      calcRemaining();
+      try {
+        calcRemaining();
+      }
+      catch (err) {
+        console.log('threw in calcRemaining')
+      }
     }, 1000);
 
     return () => {
+      mounted.current = false;
       clearInterval(timer);
+      // Kill the request if it is progress.
+      cancelSource.cancel();
+      console.log('purchase page unmounted');
     };
-  }, []);
+  }, [cancelSource, setOrderCompleted]);
 
   // If the sale succeeds, stop the timer and
   // and update the page.
   const { doRequest, errors } = useRequest({
     url: '/api/payments',
     method: 'post',
+    cancelSource,
     body: {
       orderId,
       ticketId: order.ticket.id
@@ -71,7 +89,14 @@ const PurchaseTicket = ({ order, currentUser }) => {
 
   const processStripeToken = async (token) => {
     // We only need the id, so call as follows.
-    await doRequest({ token: token.id });
+    requestState.current++;
+    try {
+      await doRequest({ token: token.id });
+    }
+    catch (err) {
+      console.log('Threw in doRequest');
+    }
+    requestState.current++;
   };
 
 

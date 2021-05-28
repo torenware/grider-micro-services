@@ -12,6 +12,7 @@ const getDomain = async () => {
   }
   const context = stdout.trim();
   switch (context) {
+    case 'grider':
     case 'docker-desktop':
       return 'ticketing.local';
     case 'digital-ocean':
