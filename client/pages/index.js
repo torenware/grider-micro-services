@@ -2,79 +2,23 @@ import Link from 'next/link';
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 import lodash from 'lodash';
+import useSWR from 'swr';
+import buildClient, { fetcher } from '../api/build-client';
 
 const LandingPage = (props) => {
-  const [tickets, setTickets] = useState(props.tickets);
-  const mounted = useRef(true);
-  const lastChange = useRef(tickets);
-  // @see https://daviseford.com/blog/2019/07/11/react-hooks-check-if-mounted.html
-  // const componentIsMounted = useRef(true);
-  // useEffect(async () => {
-  //   const client = axios.create({
-  //     baseURL: '/',
-  //   });
-  //   const timer = setInterval(async () => {
-  //     const fetched = await getInitialProps(null, client, props.currentUser);
-  //     if (componentIsMounted.current) {
-  //       setTickets([]);
-  //       setTickets(fetched.tickets);
-  //     }
-  //   }, 20 * 1000);
 
-  //   // remove timer on page teardown.
-  //   return () => {
-  //     componentIsMounted.current = false;
-  //     clearInterval(timer);
-  //   };
-  // }, [tickets]);
+  const { data: tickets, errors } = useSWR(
+    '/api/tickets',
+    fetcher,
+    {
+      initialData: props.tickets,
+      refreshInterval: 20 * 1000,
+      onSuccess: (data) => {
+        console.log(`Records fetched: ${data.length}`);
+      },
+    }
+  )
 
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    const client = axios.create({
-      baseURL: '/',
-      cancelToken: source.token,
-
-    });
-    mounted.current = true;
-    const retouchDOM = async () => {
-      const fetched = await getInitialProps(null, client, props.currentUser);
-      const lastCycle = lastChange.current;
-      let thisCycle = fetched.tickets;
-      // No change, no reason to touch DOM.
-      if (lodash.isEqual(thisCycle, lastCycle)) {
-        console.log('no change');
-        console.log('mounted?', mounted.current);
-        return;
-      }
-      else {
-        console.log('mounted?', mounted.current);
-        console.log('last', lastCycle);
-        console.log('this', thisCycle);
-      }
-      lastChange.current = fetched.tickets;
-      fetched.tickets.map(tkt => {
-        if (mounted.current) {
-          setTickets(fetched.tickets);
-        }
-      });
-    };
-    const timer = setInterval(() => {
-      if (mounted.current) {
-        retouchDOM();
-      }
-    }, 20 * 1000);
-
-    retouchDOM();
-
-    // remove timer on page teardown.
-    return () => {
-      mounted.current = false;
-      clearInterval(timer);
-      source.cancel('Unmounted');
-      console.log('Unmounted from page');
-    };
-
-  }, [tickets, lastChange]);
   const rows = tickets.map(ticket => {
     const detailUri = `/tickets/${ticket.id}`;
     const link = (<Link href={detailUri}><a>{ticket.title}</a></Link>);
@@ -98,15 +42,13 @@ const LandingPage = (props) => {
   );
 };
 
-//The static method getInitialProps(), if present, gets called before 
-// rendering, the results getting passed down to components as they render
-// as props.
 
-const getInitialProps = async (context, client, currentUser) => {
-  const { data } = await client.get('/api/tickets');
-  return { tickets: data };
+export async function getServerSideProps(context) {
+  const client = buildClient(context);
+  const { data: tickets } = await client.get('/api/tickets');
+  return {
+    props: { tickets }, // will be passed to the page component as props
+  }
 }
-
-LandingPage.getInitialProps = getInitialProps;
 
 export default LandingPage;

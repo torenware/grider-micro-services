@@ -1,4 +1,5 @@
 import Router from 'next/router';
+import { mutate } from 'swr';
 import useRequest from '../../hooks/use-request';
 
 const TicketInfo = ({ ticket, addFlash, currentUser }) => {
@@ -11,6 +12,8 @@ const TicketInfo = ({ ticket, addFlash, currentUser }) => {
     },
     onSuccess: (order) => {
       addFlash('New order created');
+      // Tell the landing page there's incoming data.
+      mutate('/api/tickets');
       Router.push(`/orders/${order.id}`);
     }
   });

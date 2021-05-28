@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Router from 'next/router';
+import { mutate } from 'swr';
 import useRequest from '../../hooks/use-request';
 import enforceLogin from '../../utils/redirect-to-login';
 
@@ -17,7 +18,10 @@ const NewTicket = ({ currentUser, addFlash }) => {
       price
     },
     onSuccess: () => {
+      // Set a flash message and invalidate the swr cache
+      // for the tickets object.
       addFlash(`Sold ticket for "${title}"`);
+      mutate('/api/tickets');
       Router.push('/');
     }
   });

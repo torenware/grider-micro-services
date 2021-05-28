@@ -78,6 +78,18 @@ export const currentUser = async () => {
   }
 };
 
+export const getTickets = async () => {
+  const url = `https://${domain}/api/tickets`;
+  try {
+    const resp = await axios.get(url, loadOptions());
+    return resp.data;
+  }
+  catch (err) {
+    console.log(err.toString());
+  }
+  return [];
+}
+
 export const createTicket = async (title, price) => {
   const data = {
     title,
@@ -206,6 +218,10 @@ const dispatch = {
   },
   currentuser: () => {
     currentUser();
+  },
+  tickets: async () => {
+    const tickets = await getTickets();
+    console.log(tickets);
   },
   payment: async () => {
     const data = createTicket('Show That Never Ends', 42);

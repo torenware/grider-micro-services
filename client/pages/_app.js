@@ -7,16 +7,15 @@ import buildClient from '../api/build-client';
 import Header from '../components/header';
 import { useState, useEffect } from 'react';
 import ErrorPage from './404';
-import cookie from 'cookie';
 
 const AppComponent = (props) => {
   const { Component, pageProps, currentUser } = props;
-  const [cookies, setCookie] = useCookies(['flash']);
+  const [cookies, setCookie, removeCookie] = useCookies(['flash']);
 
   // Catch random promise rejections.
   useEffect(() => {
     const handler = function (promiseRejectionEvent) {
-      this.alert('expose background console');
+      // this.alert('expose background console');
       console.log('promise threw', promiseRejectionEvent);
     };
     window.addEventListener("unhandledrejection", handler, false);
@@ -34,20 +33,22 @@ const AppComponent = (props) => {
 
   const [showFlash, setShowFlash] = useState(false);
   useEffect(() => {
-    if (pageProps.flashItems) {
-      setTimeout(() => {
+    if (cookies.flash) {
+      if (!showFlash) {
+        setShowFlash(cookies.flash);
+        removeCookie('flash');
+      }
+      const timer = setTimeout(() => {
         setShowFlash(false);
-      }, 5 * 1000);
-      setShowFlash(true);
+      }, 8 * 1000);
     }
-  }, [pageProps.flashItems]);
+  }, [cookies]);
 
   const addFlash = (message) => {
     setCookie('flash', message, { sameSite: true });
-    console.log('raw cookie', document.cookie);
     // But note that calling serialize directly 
     // *does* append the option:
-    console.log(cookie.serialize('flash', message, { sameSite: true }));
+    //console.log(cookie.serialize('flash', message, { sameSite: true }));
   };
 
   const disappearingAlert = (msg) => {
@@ -66,7 +67,7 @@ const AppComponent = (props) => {
         </Head>
         <Header currentUser={currentUser} />
         <div className='container'>
-          {showFlash && disappearingAlert(pageProps.flashItems)}
+          {showFlash && disappearingAlert(showFlash)}
           <Component addFlash={addFlash} currentUser={currentUser} {...pageProps} />
         </div>
       </div>
@@ -75,7 +76,7 @@ const AppComponent = (props) => {
 };
 
 AppComponent.getInitialProps = async appContext => {
-  const client = await buildClient(appContext.ctx);
+  const client = buildClient(appContext.ctx);
   let data;
   try {
     if (client && process.env.NEXT_PHASE !== 'phase-production-build') {
@@ -111,12 +112,12 @@ AppComponent.getInitialProps = async appContext => {
     // We need to use the OO interface for 
     // react-cookie, since we cannot see
     // into the main function.
-    console.log('raw cookie', document.cookie);
     const cookies = new Cookies();
     const flash = cookies.get('flash');
     if (flash) {
       pageProps.flashItems = flash;
       cookies.remove('flash');
+      console.log('unset the cookie in GIP')
     }
   }
 

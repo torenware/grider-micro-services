@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { mutate } from 'swr';
 import StripeCheckout from 'react-stripe-checkout';
 import useRequest from '../../hooks/use-request';
 import enforceLogin from '../../utils/redirect-to-login';
@@ -31,6 +32,7 @@ const PurchaseTicket = ({ order, currentUser }) => {
         if (msLeft < 0) {
           setTimeRemaining(0);
           setTimerId(false);
+          mutate('/api/tickets');
         }
         else {
           setTimeRemaining(Math.round(msLeft / 1000));
