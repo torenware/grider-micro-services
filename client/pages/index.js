@@ -4,31 +4,40 @@ import useSWR from 'swr';
 import buildClient, { fetcher } from '../api/build-client';
 
 const LandingPage = (props) => {
-  //const [oldTickets, setOldTickets] = useState([...prevTickets]);
-  const oldTickets = useRef([]);
+
+  const getOldTicketsFromStorage = () => {
+    if (typeof window === 'undefined') {
+      return [];
+    }
+    const session = window.sessionStorage;
+    let val = [];
+    if (session.getItem('oldTickets')) {
+      const retrieved = session.getItem('oldTickets');
+      val = JSON.parse(retrieved);
+    }
+    return val;
+  }
+
+  const [oldTickets, setOldTickets] = useState(getOldTicketsFromStorage());
+  const oldTicketsRef = useRef(oldTickets);
   const changed = useRef(new Map());
 
-  const setOldTickets = tkts => {
-    oldTickets.current = tkts;
+  const setOldTicketsWithRef = tkts => {
+    setOldTickets(tkts);
+    oldTicketsRef.current = tkts;
   }
 
   useEffect(() => {
     // Fetch and store old tickets on the
     // tab's sessionStorage.
-    const session = window.sessionStorage;
-    const retrieved = session.getItem('oldTickets');
-    setOldTickets(JSON.parse(retrieved));
-    console.log('from session', oldTickets.current);
-    if (!oldTickets.current) {
-      oldTickets.current = [];
-    }
-    console.log('number of old tickets', oldTickets.current.length);
+    console.log('from session', oldTickets);
+    console.log('number of old tickets', oldTickets.length);
 
     return () => {
       const session = window.sessionStorage;
       console.log('save tickets to storage');
-      console.log(oldTickets.current);
-      const payload = JSON.stringify(oldTickets.current);
+      console.log(oldTicketsRef.current);
+      const payload = JSON.stringify(oldTicketsRef.current);
       session.setItem('oldTickets', payload);
     };
   }, []);
@@ -42,10 +51,12 @@ const LandingPage = (props) => {
       refreshInterval: 20 * 1000,
       onSuccess: (data) => {
         changed.current.clear();
-        const lookup = oldTickets.current.reduce((map, tkt) => {
+        const lookup = oldTickets.reduce((map, tkt) => {
           return map.set(tkt.id, tkt);
         }, new Map());
-        setOldTickets([...data]);
+        console.log('updated num ticks', data.length);
+        setOldTicketsWithRef(data);
+        console.log('in swr', oldTickets);
         data.map(tkt => {
           if (lookup.has(tkt.id)) {
             const oldTkt = lookup.get(tkt.id);
