@@ -26,7 +26,9 @@ const fetcher = async url => {
     baseURL: url,
     method: 'get'
   })
-    .then(res => res.data)
+    .then(res => {
+      return res.data
+    })
     .catch(err => {
       console.log('caught', err.toString());
       throw err;

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import { mutate } from 'swr';
 import StripeCheckout from 'react-stripe-checkout';
+import axios from 'axios';
 import useRequest from '../../hooks/use-request';
 import enforceLogin from '../../utils/redirect-to-login';
 import ErrorPage from '../404';
@@ -11,7 +11,9 @@ const PurchaseTicket = ({ order, currentUser }) => {
   const [orderCompleted, setOrderCompleted] = useState(false);
   const [timerId, setTimerId] = useState(false);
   const mounted = useRef(true);
+  const expired = useRef(false);
   const requestState = useRef(0);
+  const cancelSource = axios.CancelToken.source();
 
   enforceLogin(currentUser);
 
@@ -20,7 +22,6 @@ const PurchaseTicket = ({ order, currentUser }) => {
   }
 
   const orderId = order.id;
-  const cancelSource = axios.CancelToken.source();
 
   // Use useEffect to manage our time left string.
   useEffect(() => {
@@ -30,9 +31,16 @@ const PurchaseTicket = ({ order, currentUser }) => {
       const msLeft = new Date(order.expiresAt) - new Date();
       if (mounted.current) {
         if (msLeft < 0) {
+          clearInterval(timerId);
           setTimeRemaining(0);
           setTimerId(false);
-          mutate('/api/tickets');
+          expired.current = true;
+          const cacheData = mutate('/api/tickets')
+            .then(data => {
+              console.log('cache:', data);
+              return data;
+            });
+          console.log('returned from mutate', cacheData);
         }
         else {
           setTimeRemaining(Math.round(msLeft / 1000));
@@ -41,23 +49,28 @@ const PurchaseTicket = ({ order, currentUser }) => {
       }
     };
     calcRemaining(); // start the clock!
-    const timer = setInterval(() => {
-      try {
-        calcRemaining();
-      }
-      catch (err) {
-        console.log('threw in calcRemaining')
-      }
-    }, 1000);
+    if (!expired.current) {
+      const timer = setInterval(() => {
+        try {
+          calcRemaining();
+        }
+        catch (err) {
+          console.log('threw in calcRemaining')
+        }
+      }, 1000);
+
+      setTimerId(timer);
+    }
 
     return () => {
       mounted.current = false;
-      clearInterval(timer);
+      clearInterval(timerId);
+      setTimerId(0);
       // Kill the request if it is progress.
       cancelSource.cancel();
       console.log('purchase page unmounted');
     };
-  }, [cancelSource, setOrderCompleted]);
+  }, [setOrderCompleted, setTimeRemaining]);
 
   // If the sale succeeds, stop the timer and
   // and update the page.
@@ -73,6 +86,7 @@ const PurchaseTicket = ({ order, currentUser }) => {
     onSuccess: (token) => {
       if (timerId) {
         clearInterval(timerId);
+        setTimerId(false);
       }
       setOrderCompleted(true);
     }

@@ -17,6 +17,50 @@
   }
 }
 
+.emphasize {
+  animation: changeWeightAnimation 10s;
+  animation-iteration-count: 1;
+}
+
+@keyframes changeWeightAnimation {
+  0% {
+    font-weight: 400; /* normal */
+  }
+
+  10% {
+    font-weight: 500; /* normal */
+  }
+
+  20% {
+    font-weight: 600; /* normal */
+  }
+
+  30% {
+    font-weight: 700; /* normal */
+  }
+
+  40% {
+    font-weight: 800; /* normal */
+  }
+
+  50% {
+    font-weight: 700; /* normal */
+  }
+
+  60% {
+    font-weight: 600; /* normal */
+  }
+
+  70% {
+    font-weight: 500; /* normal */
+  }
+
+  80% {
+    font-weight: 400; /* normal */
+  }
+
+}
+
 div.tickets label {
   font-weight: bold;
   display: block;

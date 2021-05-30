@@ -12,15 +12,22 @@ module.exports = (phase, { defaultConfig }) => {
         config.watchOptions.poll = 300;
         return config;
       },
+      future: {
+        webpack5: false,
+      },
+      sourceMap: true,
     }
   }
   else if (
-    phase === PHASE_PRODUCTION_BUILD
+    phase === PHASE_PRODUCTION_BUILD || phase === PHASE_PRODUCTION_SERVER
   ) {
     if (process.env.NEXT_PUBLIC_BASE_URI === 'ingress-nginx-controller.ingress-nginx') {
       console.log(`${phase}: generating source maps...`)
       return {
-        productionBrowserSourceMaps: true
+        productionBrowserSourceMaps: true,
+        future: {
+          webpack5: false,
+        },
       }
     }
   }
