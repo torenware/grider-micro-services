@@ -17,7 +17,8 @@ const LandingPage = (props) => {
     }
     return val;
   }
-
+  // Use both here because we need to trigger redraws (so state),
+  // but state is gone by the time the component tears down, so ref too.
   const [oldTickets, setOldTickets] = useState(getOldTicketsFromStorage());
   const oldTicketsRef = useRef(oldTickets);
   const changed = useRef(new Map());
@@ -54,9 +55,7 @@ const LandingPage = (props) => {
         const lookup = oldTickets.reduce((map, tkt) => {
           return map.set(tkt.id, tkt);
         }, new Map());
-        console.log('updated num ticks', data.length);
         setOldTicketsWithRef(data);
-        console.log('in swr', oldTickets);
         data.map(tkt => {
           if (lookup.has(tkt.id)) {
             const oldTkt = lookup.get(tkt.id);
