@@ -104,7 +104,7 @@ export async function getServerSideProps(context) {
   const { data: tickets } = await client.get('/api/tickets');
   const date = new Date().toLocaleTimeString();
   console.log(`${date}: retrieved ${tickets.length} records`);
-  const props = { tickets, oldTickets: [] };
+  const props = { tickets };
 
   return {
     props, // will be passed to the page component as props
