@@ -6,8 +6,20 @@ const {
 
 module.exports = (phase, { defaultConfig }) => {
 
+  const all = {
+    async rewrites() {
+      return [
+        {
+          source: '/auth-img/:slug',
+          destination: '/auth/:slug',
+        },
+      ]
+    },
+  }
+
   if (phase === PHASE_DEVELOPMENT_SERVER) {
     return {
+      ...all,
       webpackDevMiddleware: config => {
         config.watchOptions.poll = 300;
         return config;
@@ -24,6 +36,7 @@ module.exports = (phase, { defaultConfig }) => {
     if (process.env.NEXT_PUBLIC_BASE_URI === 'ingress-nginx-controller.ingress-nginx') {
       console.log(`${phase}: generating source maps...`)
       return {
+        ...all,
         generateBuildId: async () => {
           if (process.env.LAST_COMMIT) {
 

@@ -61,6 +61,11 @@
 
 }
 
+div.container img.side-image {
+  margin-top: 10px !important;
+  margin-right: 10px !important;  
+}
+
 div.tickets label {
   font-weight: bold;
   display: block;
