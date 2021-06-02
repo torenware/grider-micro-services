@@ -24,6 +24,14 @@ module.exports = (phase, { defaultConfig }) => {
     if (process.env.NEXT_PUBLIC_BASE_URI === 'ingress-nginx-controller.ingress-nginx') {
       console.log(`${phase}: generating source maps...`)
       return {
+        generateBuildId: async () => {
+          if (process.env.LAST_COMMIT) {
+
+            console.log('Got LAST_COMMIT');
+            return process.env.LAST_COMMIT;
+          }
+          return null;
+        },
         productionBrowserSourceMaps: true,
         future: {
           webpack5: false,
