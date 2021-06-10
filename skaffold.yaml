@@ -46,11 +46,11 @@ build:
     context: client
     sync:
       manual:
-      - src: '***/*.ts'
+      - src: '***/*.js'
         dest: .
     docker:
-      dockerfile: Dockerfile-production
-      # dockerfile: Dockerfile
+      #dockerfile: Dockerfile-production
+      dockerfile: Dockerfile
       buildArgs:
         NEXT_PUBLIC_STRIPE_PUBLIC_KEY: "{{ .NEXT_PUBLIC_STRIPE_PUBLIC_KEY }}"
         NEXT_PUBLIC_BASE_URI: "ingress-nginx-controller.ingress-nginx"

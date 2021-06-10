@@ -30,9 +30,10 @@ const component = (props) => {
           <Image
             src='/auth-img/ticket-window.jpg'
             className='side-image'
-            width="500"
+            // width="500"
             alt="Ticket Window"
-            objectFit="fill"
+            layout="fill"
+            objectFit="contain"
           />
         </div>
         <div className='col-8'>

@@ -26,7 +26,6 @@ const PurchaseTicket = ({ order, currentUser }) => {
   // Use useEffect to manage our time left string.
   useEffect(() => {
     mounted.current = true;
-    // console.log('effect!');
     const calcRemaining = () => {
       const msLeft = new Date(order.expiresAt) - new Date();
       if (mounted.current) {
@@ -35,16 +34,9 @@ const PurchaseTicket = ({ order, currentUser }) => {
           setTimeRemaining(0);
           setTimerId(false);
           expired.current = true;
-          const cacheData = mutate('/api/tickets')
-            .then(data => {
-              console.log('cache:', data);
-              return data;
-            });
-          console.log('returned from mutate', cacheData);
         }
         else {
           setTimeRemaining(Math.round(msLeft / 1000));
-          // console.log('tick', timeRemaining);
         }
       }
     };
